@@ -12,10 +12,18 @@ body {
   margin-top: 20px;
 }
 
-ttextarea {
+/* Fixed typo for textarea styling */
+textarea {
   width: 80%;
   height: 100px;
   margin-top: 20px;
+}
+
+/* Added styling for note buttons container */
+.note-buttons {
+  display: inline-flex;
+  gap: 5px;
+  margin-left: 10px;
 }
 
 button {

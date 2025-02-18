@@ -18,6 +18,10 @@ function createNoteElement(noteText) {
   textEl.textContent = noteText;
   noteEl.appendChild(textEl);
 
+  // Create a container for buttons
+  const buttonsContainer = document.createElement('span');
+  buttonsContainer.className = 'note-buttons';
+
   // Save to file button
   const saveBtn = document.createElement('button');
   saveBtn.textContent = 'Save to File';
@@ -31,7 +35,7 @@ function createNoteElement(noteText) {
     a.click();
     URL.revokeObjectURL(a.href);
   });
-  noteEl.appendChild(saveBtn);
+  buttonsContainer.appendChild(saveBtn);
 
   // Delete button
   const deleteBtn = document.createElement('button');
@@ -40,7 +44,10 @@ function createNoteElement(noteText) {
     noteEl.remove();
     updateLocalStorage();
   });
-  noteEl.appendChild(deleteBtn);
+  buttonsContainer.appendChild(deleteBtn);
+  
+  // Append button container to note element
+  noteEl.appendChild(buttonsContainer);
 
   return noteEl;
 }
