@@ -82,4 +82,41 @@ window.onload = () => {
       noteContainer.appendChild(noteEl);
     });
   }
+
+  // Add event listeners for new features after DOM is ready
+  // Load note from file
+  document.getElementById('load-file-btn').addEventListener('click', () => {
+    document.getElementById('file-input').click();
+  });
+
+  document.getElementById('file-input').addEventListener('change', evt => {
+    const file = evt.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const text = e.target.result.trim();
+      if (text) {
+        const noteContainer = document.getElementById('note-container');
+        noteContainer.appendChild(createNoteElement(text));
+        updateLocalStorage();
+      }
+      // reset value so selecting same file again triggers change
+      evt.target.value = '';
+    };
+    reader.readAsText(file);
+  });
+
+  // Paste from clipboard
+  document.getElementById('paste-btn').addEventListener('click', async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text.trim()) {
+        const noteContainer = document.getElementById('note-container');
+        noteContainer.appendChild(createNoteElement(text.trim()));
+        updateLocalStorage();
+      }
+    } catch (err) {
+      alert('Unable to read clipboard: ' + err);
+    }
+  });
 };
