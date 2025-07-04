@@ -31,7 +31,7 @@ function createNoteElement(noteText) {
     // Create a download link and trigger it
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'Quick_Note_' + new Date().getTime() + '.txt';
+    a.download = 'Todds_Quick_Note_' + new Date().getTime() + '.txt';
     a.click();
     URL.revokeObjectURL(a.href);
   });
