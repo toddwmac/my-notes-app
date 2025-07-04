@@ -18,7 +18,7 @@ This is a minimalistic web application for text-only note-taking. The app featur
 
 ## How It Works
 1. **Creating Notes**: Users can write a note in the textarea and click the "Save Note" button to save the note. The note is displayed in the note container and saved in local storage.
-2. **Saving Notes to File**: Each note has a "Save to File" button that allows users to save the note as a text file on their local machine. The file name is prefixed with "Quick_Note" followed by a timestamp.
+2. **Saving Notes to File**: Each note has a "Save to File" button that allows users to save the note as a text file on their local machine. The file name is prefixed with "Todds_Quick_Note" followed by a timestamp.
 3. **Deleting Notes**: Each note has a "Delete" button that allows users to delete the note. The note is removed from the note container and local storage is updated.
 4. **Clearing All Notes**: The "Clear All Notes" button clears all notes from the note container and local storage.
 
