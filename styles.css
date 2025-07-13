@@ -1,7 +1,9 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
   margin: 0;
-  padding: 0;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -9,23 +11,75 @@ body {
 
 #note-container {
   width: 80%;
+  max-width: 800px;
   margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
 }
 
 /* Fixed typo for textarea styling */
 textarea {
   width: 80%;
+  max-width: 780px;
   height: 100px;
+  padding: 10px;
   margin-top: 20px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-size: 16px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.note {
+  background: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  word-wrap: break-word;
+  animation: fadeIn 0.5s ease;
+}
+
+.note-text {
+  font-size: 16px;
+  margin-bottom: 10px;
 }
 
 /* Added styling for note buttons container */
 .note-buttons {
-  display: inline-flex;
-  gap: 5px;
-  margin-left: 10px;
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  justify-content: flex-end;
 }
 
 button {
-  margin-top: 10px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 500;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+#clear-btn {
+  background-color: #dc3545;
+}
+
+#clear-btn:hover {
+  background-color: #c82333;
 }
