@@ -73,6 +73,10 @@ document.getElementById('clear-btn').addEventListener('click', () => {
 
 // On window load, load notes from localStorage
 window.onload = () => {
+  document.getElementById('dark-mode-toggle').addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+  });
+
   const savedNotes = localStorage.getItem('notes');
   if (savedNotes) {
     const notesArray = JSON.parse(savedNotes);

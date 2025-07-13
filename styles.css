@@ -83,3 +83,43 @@ button:hover {
 #clear-btn:hover {
   background-color: #c82333;
 }
+
+.button-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.dark-mode .note {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border-color: #333;
+}
+
+.dark-mode textarea {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border-color: #333;
+}
+
+.dark-mode button {
+  background-color: #333;
+  color: #e0e0e0;
+}
+
+.dark-mode button:hover {
+  background-color: #555;
+}
+
+.dark-mode #clear-btn {
+  background-color: #992222;
+}
+
+.dark-mode #clear-btn:hover {
+  background-color: #bb3333;
+}
