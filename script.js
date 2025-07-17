@@ -203,25 +203,50 @@ window.onload = () => {
   const markdownHelpBtn = document.getElementById('markdown-help-btn');
   const closeModalBtn = document.querySelector('.close-modal');
   
-  markdownHelpBtn.addEventListener('click', () => {
+  // Ensure modal is hidden by default
+  markdownHelpModal.style.display = 'none';
+  
+  // Show modal as popup when help button is clicked
+  markdownHelpBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     markdownHelpModal.style.display = 'block';
+    
+    // Add a small delay before applying focus to ensure modal is visible
+    setTimeout(() => {
+      closeModalBtn.focus();
+    }, 100);
   });
   
+  // Close modal when close button is clicked
   closeModalBtn.addEventListener('click', () => {
-    markdownHelpModal.style.display = 'none';
+    closeModal();
   });
+  
+  // Function to close the modal with animation
+  function closeModal() {
+    // Add closing animation
+    const modalContent = markdownHelpModal.querySelector('.modal-content');
+    modalContent.style.animation = 'modalClose 0.2s ease-in forwards';
+    
+    // Wait for animation to complete before hiding modal
+    setTimeout(() => {
+      markdownHelpModal.style.display = 'none';
+      modalContent.style.animation = 'modalPop 0.3s ease-out';
+    }, 200);
+  }
   
   // Close modal when clicking outside of it
   window.addEventListener('click', (event) => {
     if (event.target === markdownHelpModal) {
-      markdownHelpModal.style.display = 'none';
+      closeModal();
     }
   });
   
   // Close modal with Escape key
   window.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && markdownHelpModal.style.display === 'block') {
-      markdownHelpModal.style.display = 'none';
+      closeModal();
     }
   });
 };
