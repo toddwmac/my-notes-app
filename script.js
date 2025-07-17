@@ -380,7 +380,7 @@ function setupMarkdownToolbar() {
   function wrapText(beforeText, afterText, defaultText) {
     const start = noteInput.selectionStart;
     const end = noteInput.selectionEnd;
-    const selectedText = noteInput.value.substring(start, end);
+    let selectedText = noteInput.value.substring(start, end);
     const beforeSelection = noteInput.value.substring(0, start);
     const afterSelection = noteInput.value.substring(end);
     
@@ -404,9 +404,21 @@ function setupMarkdownToolbar() {
       noteInput.focus();
       noteInput.setSelectionRange(start + beforeText.length, start + beforeText.length + defaultText.length);
     } else {
+      // Trim any spaces from the beginning and end of the selected text
+      const originalLength = selectedText.length;
+      const leadingSpaces = selectedText.match(/^\s*/)[0].length;
+      const trailingSpaces = selectedText.match(/\s*$/)[0].length;
+      
+      // Remove spaces from the beginning and end of the selection
+      selectedText = selectedText.trim();
+      
+      // Adjust selection start and end positions
+      const adjustedStart = start + leadingSpaces;
+      const adjustedEnd = end - trailingSpaces;
+      
       // Check if the selection already has this formatting
-      const checkBefore = noteInput.value.substring(Math.max(0, start - beforeText.length), start);
-      const checkAfter = noteInput.value.substring(end, Math.min(noteInput.value.length, end + afterText.length));
+      const checkBefore = noteInput.value.substring(Math.max(0, adjustedStart - beforeText.length), adjustedStart);
+      const checkAfter = noteInput.value.substring(adjustedEnd, Math.min(noteInput.value.length, adjustedEnd + afterText.length));
       
       // Check for alternate formatting (for cycling between ** and __)
       const altFormats = {
@@ -419,35 +431,45 @@ function setupMarkdownToolbar() {
       const altBefore = altFormats[beforeText];
       const altAfter = altFormats[afterText];
       
+      // Reconstruct the text before and after the trimmed selection
+      const newBeforeSelection = beforeSelection + noteInput.value.substring(start, adjustedStart);
+      const newAfterSelection = noteInput.value.substring(adjustedEnd, end) + afterSelection;
+      
       if (checkBefore === beforeText && checkAfter === afterText) {
         // Remove the formatting
-        noteInput.value = beforeSelection.substring(0, beforeSelection.length - beforeText.length) + 
+        noteInput.value = newBeforeSelection.substring(0, newBeforeSelection.length - beforeText.length) + 
                           selectedText + 
-                          afterSelection.substring(afterText.length);
+                          newAfterSelection.substring(afterText.length);
         noteInput.focus();
-        noteInput.setSelectionRange(start - beforeText.length, end - beforeText.length);
+        noteInput.setSelectionRange(adjustedStart - beforeText.length, adjustedEnd - beforeText.length);
       } else if (altBefore && altAfter && 
-                 noteInput.value.substring(Math.max(0, start - altBefore.length), start) === altBefore && 
-                 noteInput.value.substring(end, Math.min(noteInput.value.length, end + altAfter.length)) === altAfter) {
+                 noteInput.value.substring(Math.max(0, adjustedStart - altBefore.length), adjustedStart) === altBefore && 
+                 noteInput.value.substring(adjustedEnd, Math.min(noteInput.value.length, adjustedEnd + altAfter.length)) === altAfter) {
         // Remove alternate formatting and apply new formatting
-        const newBeforeSelection = beforeSelection.substring(0, beforeSelection.length - altBefore.length);
-        const newAfterSelection = afterSelection.substring(altAfter.length);
+        const altBeforeSelection = newBeforeSelection.substring(0, newBeforeSelection.length - altBefore.length);
+        const altAfterSelection = newAfterSelection.substring(altAfter.length);
         
         // Check if we need to add a space after the tag
         const spaceAfter = needsSpaceAfter ? ' ' : '';
         
         // Apply the new formatting without spaces
-        noteInput.value = newBeforeSelection + beforeText + selectedText + afterText + spaceAfter + newAfterSelection;
+        noteInput.value = altBeforeSelection + beforeText + selectedText + afterText + spaceAfter + altAfterSelection;
         noteInput.focus();
-        noteInput.setSelectionRange(start - altBefore.length + beforeText.length, end - altBefore.length + beforeText.length);
+        noteInput.setSelectionRange(
+          altBeforeSelection.length + beforeText.length, 
+          altBeforeSelection.length + beforeText.length + selectedText.length
+        );
       } else {
         // Check if we need to add a space after the tag
         const spaceAfter = needsSpaceAfter ? ' ' : '';
         
         // Apply the formatting without spaces
-        noteInput.value = beforeSelection + beforeText + selectedText + afterText + spaceAfter + afterSelection;
+        noteInput.value = newBeforeSelection + beforeText + selectedText + afterText + spaceAfter + newAfterSelection;
         noteInput.focus();
-        noteInput.setSelectionRange(start + beforeText.length, end + beforeText.length);
+        noteInput.setSelectionRange(
+          newBeforeSelection.length + beforeText.length, 
+          newBeforeSelection.length + beforeText.length + selectedText.length
+        );
       }
     }
     
