@@ -67,9 +67,29 @@ document.getElementById('save-btn').addEventListener('click', () => {
 
 // Handle Clear All Notes button
 document.getElementById('clear-btn').addEventListener('click', () => {
+  // Clear the text input area
+  document.getElementById('note-input').value = '';
+  // Update markdown display
+  updateMarkdownDisplay();
+  // Also clear all saved notes
   document.getElementById('note-container').innerHTML = '';
   localStorage.removeItem('notes');
 });
+
+// Function to update markdown display
+function updateMarkdownDisplay() {
+  const noteInput = document.getElementById('note-input');
+  const markdownDisplay = document.getElementById('markdown-display');
+  const text = noteInput.value;
+  
+  if (text.trim()) {
+    // Use marked library to convert markdown to HTML
+    const html = marked.parse(text);
+    markdownDisplay.innerHTML = html;
+  } else {
+    markdownDisplay.innerHTML = '<p style="color: #999; font-style: italic;">Start typing to see markdown preview...</p>';
+  }
+}
 
 // On window load, load notes from localStorage
 window.onload = () => {
@@ -100,9 +120,11 @@ window.onload = () => {
     reader.onload = e => {
       const text = e.target.result.trim();
       if (text) {
-        const noteContainer = document.getElementById('note-container');
-        noteContainer.appendChild(createNoteElement(text));
-        updateLocalStorage();
+        // Put the file content into the text input area
+        const noteInput = document.getElementById('note-input');
+        noteInput.value = text;
+        // Update the markdown preview
+        updateMarkdownDisplay();
       }
       // reset value so selecting same file again triggers change
       evt.target.value = '';
@@ -115,12 +137,67 @@ window.onload = () => {
     try {
       const text = await navigator.clipboard.readText();
       if (text.trim()) {
-        const noteContainer = document.getElementById('note-container');
-        noteContainer.appendChild(createNoteElement(text.trim()));
-        updateLocalStorage();
+        // Put the clipboard content into the text input area
+        const noteInput = document.getElementById('note-input');
+        noteInput.value = text.trim();
+        // Update the markdown preview
+        updateMarkdownDisplay();
       }
     } catch (err) {
       alert('Unable to read clipboard: ' + err);
     }
   });
+
+  // Add real-time markdown preview
+  const noteInput = document.getElementById('note-input');
+  noteInput.addEventListener('input', updateMarkdownDisplay);
+  noteInput.addEventListener('paste', () => {
+    // Small delay to allow paste content to be processed
+    setTimeout(updateMarkdownDisplay, 10);
+  });
+
+  // Copy markdown HTML button
+  document.getElementById('copy-markdown-btn').addEventListener('click', async () => {
+    const markdownDisplay = document.getElementById('markdown-display');
+    const htmlContent = markdownDisplay.innerHTML;
+    
+    if (htmlContent && !htmlContent.includes('Start typing to see markdown preview')) {
+      try {
+        await navigator.clipboard.writeText(htmlContent);
+        const btn = document.getElementById('copy-markdown-btn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.style.backgroundColor = '#20c997';
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.backgroundColor = '';
+        }, 2000);
+      } catch (err) {
+        // Fallback for browsers that don't support clipboard API
+        const textArea = document.createElement('textarea');
+        textArea.value = htmlContent;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          const btn = document.getElementById('copy-markdown-btn');
+          const originalText = btn.textContent;
+          btn.textContent = 'Copied!';
+          btn.style.backgroundColor = '#20c997';
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.backgroundColor = '';
+          }, 2000);
+        } catch (fallbackErr) {
+          alert('Unable to copy to clipboard');
+        }
+        document.body.removeChild(textArea);
+      }
+    } else {
+      alert('No markdown content to copy');
+    }
+  });
+
+  // Initialize markdown display
+  updateMarkdownDisplay();
 };
