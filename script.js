@@ -197,43 +197,82 @@ window.onload = () => {
 
   // Initialize markdown display
   updateMarkdownDisplay();
-  
+
   // Select All button for input textarea
   document.getElementById('select-all-input-btn').addEventListener('click', () => {
     const noteInput = document.getElementById('note-input');
     noteInput.focus();
     noteInput.select();
+    
+    // Provide visual feedback
+    const btn = document.getElementById('select-all-input-btn');
+    const originalText = btn.textContent;
+    btn.textContent = 'Selected!';
+    setTimeout(() => {
+      btn.textContent = originalText;
+    }, 1000);
   });
   
   // Select All button for preview
   document.getElementById('select-all-preview-btn').addEventListener('click', () => {
     const markdownDisplay = document.getElementById('markdown-display');
     
-    // Create a range and selection
-    const range = document.createRange();
-    const selection = window.getSelection();
-    
-    // Select the content of the markdown display
-    range.selectNodeContents(markdownDisplay);
-    selection.removeAllRanges();
-    selection.addRange(range);
+    if (window.getSelection && document.createRange) {
+      // Modern browsers
+      const selection = window.getSelection();
+      const range = document.createRange();
+      
+      try {
+        // Select the content of the markdown display
+        range.selectNodeContents(markdownDisplay);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        
+        // Provide visual feedback
+        const btn = document.getElementById('select-all-preview-btn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Selected!';
+        setTimeout(() => {
+          btn.textContent = originalText;
+        }, 1000);
+      } catch (e) {
+        alert('Could not select text: ' + e);
+      }
+    } else if (document.body.createTextRange) {
+      // IE fallback
+      const range = document.body.createTextRange();
+      range.moveToElementText(markdownDisplay);
+      range.select();
+    }
   });
-  
+
   // Copy Formatted Text button (like Windows right-click copy)
   document.getElementById('copy-formatted-btn').addEventListener('click', async () => {
     const markdownDisplay = document.getElementById('markdown-display');
+
+    // Create a temporary div to hold the content
+    // This ensures we get the formatted text, not the HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.left = '-9999px';
+    tempDiv.style.top = '0';
     
-    // First select the content
+    // Clone the markdown display content to preserve formatting
+    const clone = markdownDisplay.cloneNode(true);
+    tempDiv.appendChild(clone);
+    document.body.appendChild(tempDiv);
+    
+    // Select the cloned content
     const range = document.createRange();
     const selection = window.getSelection();
-    range.selectNodeContents(markdownDisplay);
+    range.selectNodeContents(clone);
     selection.removeAllRanges();
     selection.addRange(range);
-    
+
     try {
-      // Use the document.execCommand for formatted text copy (like right-click copy)
+      // Use document.execCommand which preserves formatting on Windows
       const success = document.execCommand('copy');
-      
+
       if (success) {
         const btn = document.getElementById('copy-formatted-btn');
         const originalText = btn.textContent;
@@ -247,10 +286,34 @@ window.onload = () => {
         throw new Error('Copy command failed');
       }
     } catch (err) {
-      alert('Unable to copy formatted text: ' + err);
+      // Try an alternative approach for Windows
+      try {
+        // For Windows, we can try using the Clipboard API with 'text/html' format
+        const htmlContent = markdownDisplay.innerHTML;
+        const plainText = markdownDisplay.innerText || markdownDisplay.textContent;
+        
+        const clipboardItem = new ClipboardItem({
+          'text/html': new Blob([htmlContent], { type: 'text/html' }),
+          'text/plain': new Blob([plainText], { type: 'text/plain' })
+        });
+        
+        await navigator.clipboard.write([clipboardItem]);
+        
+        const btn = document.getElementById('copy-formatted-btn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.style.backgroundColor = '#20c997';
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.backgroundColor = '';
+        }, 2000);
+      } catch (clipErr) {
+        alert('Unable to copy formatted text: ' + err);
+      }
     } finally {
-      // Clear selection
+      // Clean up
       selection.removeAllRanges();
+      document.body.removeChild(tempDiv);
     }
   });
 
