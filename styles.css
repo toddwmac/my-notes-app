@@ -80,6 +80,12 @@ button {
   font-weight: 500;
 }
 
+/* Override for Dark button */
+#dark-mode-toggle {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
 button:hover {
   background-color: #0056b3;
 }
@@ -677,8 +683,9 @@ button:hover {
 
 .dark-mode .md-tool-divider {
   background-color: #444;
-}/* App 
-support styling in cheat sheet */
+}
+
+/* App support styling in cheat sheet */
 .app-support {
   font-size: 12px;
   color: #6c757d;
@@ -689,8 +696,9 @@ support styling in cheat sheet */
 
 .dark-mode .app-support {
   color: #adb5bd;
-}/
-* Dark Mode Toggle Button */
+}
+
+/* Dark Mode Toggle Button */
 #dark-mode-toggle {
   background-color: #000;
   color: #fff;
