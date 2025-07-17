@@ -65,15 +65,12 @@ document.getElementById('save-btn').addEventListener('click', () => {
   }
 });
 
-// Handle Clear All Notes button
+// Handle Clear All Notes button - now only clears the edit window
 document.getElementById('clear-btn').addEventListener('click', () => {
   // Clear the text input area
   document.getElementById('note-input').value = '';
   // Update markdown display
   updateMarkdownDisplay();
-  // Also clear all saved notes
-  document.getElementById('note-container').innerHTML = '';
-  localStorage.removeItem('notes');
 });
 
 // Function to update markdown display
@@ -200,4 +197,31 @@ window.onload = () => {
 
   // Initialize markdown display
   updateMarkdownDisplay();
+  
+  // Markdown Help Modal functionality
+  const markdownHelpModal = document.getElementById('markdown-help-modal');
+  const markdownHelpBtn = document.getElementById('markdown-help-btn');
+  const closeModalBtn = document.querySelector('.close-modal');
+  
+  markdownHelpBtn.addEventListener('click', () => {
+    markdownHelpModal.style.display = 'block';
+  });
+  
+  closeModalBtn.addEventListener('click', () => {
+    markdownHelpModal.style.display = 'none';
+  });
+  
+  // Close modal when clicking outside of it
+  window.addEventListener('click', (event) => {
+    if (event.target === markdownHelpModal) {
+      markdownHelpModal.style.display = 'none';
+    }
+  });
+  
+  // Close modal with Escape key
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && markdownHelpModal.style.display === 'block') {
+      markdownHelpModal.style.display = 'none';
+    }
+  });
 };

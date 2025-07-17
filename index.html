@@ -12,9 +12,10 @@
   <h1>Todd's Quick Notes</h1>
   <!-- Added Clear All Notes button -->
   <div class="button-container">
-    <button id="clear-btn">Clear All Notes</button>
+    <button id="clear-btn">Clear Editor</button>
     <button id="load-file-btn">Load Note From File</button>
     <button id="paste-btn">Paste From Clipboard</button>
+    <button id="markdown-help-btn">Markdown Help</button>
     <button id="dark-mode-toggle">Toggle Dark Mode</button>
   </div>
   <input type="file" id="file-input" accept=".txt" style="display:none" />
@@ -31,6 +32,184 @@
     <div id="markdown-display"></div>
   </div>
   
+  <!-- Markdown Help Modal -->
+  <div id="markdown-help-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Markdown Cheat Sheet</h2>
+        <span class="close-modal">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="cheatsheet-section">
+          <h3>Headers</h3>
+          <div class="cheatsheet-row">
+            <div class="markdown-code"># Heading 1</div>
+            <div class="markdown-result"><h1 style="margin:0">Heading 1</h1></div>
+          </div>
+          <div class="cheatsheet-row">
+            <div class="markdown-code">## Heading 2</div>
+            <div class="markdown-result"><h2 style="margin:0">Heading 2</h2></div>
+          </div>
+          <div class="cheatsheet-row">
+            <div class="markdown-code">### Heading 3</div>
+            <div class="markdown-result"><h3 style="margin:0">Heading 3</h3></div>
+          </div>
+        </div>
+        
+        <div class="cheatsheet-section">
+          <h3>Emphasis</h3>
+          <div class="cheatsheet-row">
+            <div class="markdown-code">*Italic text*</div>
+            <div class="markdown-result"><em>Italic text</em></div>
+          </div>
+          <div class="cheatsheet-row">
+            <div class="markdown-code">_Italic text_</div>
+            <div class="markdown-result"><em>Italic text</em></div>
+          </div>
+          <div class="cheatsheet-row">
+            <div class="markdown-code">**Bold text**</div>
+            <div class="markdown-result"><strong>Bold text</strong></div>
+          </div>
+          <div class="cheatsheet-row">
+            <div class="markdown-code">__Bold text__</div>
+            <div class="markdown-result"><strong>Bold text</strong></div>
+          </div>
+          <div class="cheatsheet-row">
+            <div class="markdown-code">~~Strikethrough~~</div>
+            <div class="markdown-result"><del>Strikethrough</del></div>
+          </div>
+        </div>
+        
+        <div class="cheatsheet-section">
+          <h3>Lists</h3>
+          <div class="cheatsheet-row">
+            <div class="markdown-code">
+              * Unordered item<br>
+              * Unordered item<br>
+              &nbsp;&nbsp;* Nested item
+            </div>
+            <div class="markdown-result">
+              <ul style="margin:0">
+                <li>Unordered item</li>
+                <li>Unordered item
+                  <ul>
+                    <li>Nested item</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="cheatsheet-row">
+            <div class="markdown-code">
+              1. Ordered item<br>
+              2. Ordered item<br>
+              &nbsp;&nbsp;1. Nested item
+            </div>
+            <div class="markdown-result">
+              <ol style="margin:0">
+                <li>Ordered item</li>
+                <li>Ordered item
+                  <ol>
+                    <li>Nested item</li>
+                  </ol>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+        
+        <div class="cheatsheet-section">
+          <h3>Links & Images</h3>
+          <div class="cheatsheet-row">
+            <div class="markdown-code">[Link text](https://example.com)</div>
+            <div class="markdown-result"><a href="#">Link text</a></div>
+          </div>
+          <div class="cheatsheet-row">
+            <div class="markdown-code">![Alt text](image-url.jpg)</div>
+            <div class="markdown-result">[Image: Alt text]</div>
+          </div>
+        </div>
+        
+        <div class="cheatsheet-section">
+          <h3>Code</h3>
+          <div class="cheatsheet-row">
+            <div class="markdown-code">`inline code`</div>
+            <div class="markdown-result"><code>inline code</code></div>
+          </div>
+          <div class="cheatsheet-row">
+            <div class="markdown-code">```<br>code block<br>multiple lines<br>```</div>
+            <div class="markdown-result">
+              <pre style="margin:0"><code>code block
+multiple lines</code></pre>
+            </div>
+          </div>
+        </div>
+        
+        <div class="cheatsheet-section">
+          <h3>Blockquotes</h3>
+          <div class="cheatsheet-row">
+            <div class="markdown-code">> This is a blockquote</div>
+            <div class="markdown-result">
+              <blockquote style="margin:0">This is a blockquote</blockquote>
+            </div>
+          </div>
+        </div>
+        
+        <div class="cheatsheet-section">
+          <h3>Tables</h3>
+          <div class="cheatsheet-row">
+            <div class="markdown-code">
+              | Header 1 | Header 2 |<br>
+              | -------- | -------- |<br>
+              | Cell 1   | Cell 2   |
+            </div>
+            <div class="markdown-result">
+              <table style="margin:0">
+                <thead>
+                  <tr>
+                    <th>Header 1</th>
+                    <th>Header 2</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Cell 1</td>
+                    <td>Cell 2</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        
+        <div class="cheatsheet-section">
+          <h3>Line Breaks & Paragraphs</h3>
+          <div class="cheatsheet-note">
+            <p><strong>Important:</strong> Line breaks in markdown vary by platform:</p>
+            <ul>
+              <li>For a single line break: End a line with two spaces, then press Enter/Return</li>
+              <li>For a new paragraph: Leave a blank line between text (press Enter/Return twice)</li>
+            </ul>
+            <p><strong>CRLF vs LF:</strong> Different platforms handle line endings differently:</p>
+            <ul>
+              <li>Windows uses CRLF (Carriage Return + Line Feed)</li>
+              <li>Mac/Linux use LF (Line Feed only)</li>
+              <li>This rarely affects markdown rendering, but can matter when sharing files across platforms</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="cheatsheet-section">
+          <h3>Horizontal Rule</h3>
+          <div class="cheatsheet-row">
+            <div class="markdown-code">---</div>
+            <div class="markdown-result"><hr style="margin:0"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="script.js"></script>
 </body>
