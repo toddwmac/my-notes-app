@@ -17,13 +17,15 @@
     <button id="clear-btn">Clear Editor</button>
     <button id="load-file-btn">Load Note From File</button>
     <button id="paste-btn">Paste From Clipboard</button>
-    <button id="markdown-help-btn">Markdown Help</button>
     <button id="dark-mode-toggle">Toggle Dark Mode</button>
   </div>
   <input type="file" id="file-input" accept=".txt" style="display:none" />
   <div id="note-container"></div>
   <textarea id="note-input" placeholder="Write your note here..."></textarea>
-  <button id="save-btn">Save Note</button>
+  <div class="editor-actions">
+    <button id="save-btn">Save Note</button>
+    <button id="markdown-help-btn" class="icon-button" title="Markdown Help">?</button>
+  </div>
 
   <!-- Markdown Display Panel -->
   <div id="markdown-panel">

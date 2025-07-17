@@ -451,4 +451,42 @@ button:hover {
 .dark-mode .cheatsheet-note {
   background-color: #2d2d2d;
   border-left-color: #0d6efd;
+}/*
+ Editor actions container */
+.editor-actions {
+  width: 80%;
+  max-width: 800px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+/* Question mark icon button */
+.icon-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #6c757d;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.icon-button:hover {
+  background-color: #5a6268;
+  transform: scale(1.05);
+}
+
+.dark-mode .icon-button {
+  background-color: #495057;
+}
+
+.dark-mode .icon-button:hover {
+  background-color: #6c757d;
 }
