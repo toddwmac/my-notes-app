@@ -92,6 +92,14 @@ function updateMarkdownDisplay() {
 window.onload = () => {
   document.getElementById('dark-mode-toggle').addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
+    
+    // Update button text based on current mode
+    const darkModeBtn = document.getElementById('dark-mode-toggle');
+    if (document.body.classList.contains('dark-mode')) {
+      darkModeBtn.textContent = 'Light';
+    } else {
+      darkModeBtn.textContent = 'Dark';
+    }
   });
 
   const savedNotes = localStorage.getItem('notes');
