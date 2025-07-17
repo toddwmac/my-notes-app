@@ -384,10 +384,23 @@ function setupMarkdownToolbar() {
     const beforeSelection = noteInput.value.substring(0, start);
     const afterSelection = noteInput.value.substring(end);
     
+    // Check if we need to add a space after the tag
+    const needsSpaceAfter = afterSelection.length > 0 && 
+                           !afterSelection.startsWith(' ') && 
+                           !afterSelection.startsWith('\n') &&
+                           !afterSelection.startsWith(',') &&
+                           !afterSelection.startsWith('.') &&
+                           !afterSelection.startsWith(';') &&
+                           !afterSelection.startsWith(':') &&
+                           !afterSelection.startsWith('!') &&
+                           !afterSelection.startsWith('?');
+    
     // If no text is selected, insert default text
     if (start === end) {
       const insertText = beforeText + defaultText + afterText;
-      noteInput.value = beforeSelection + insertText + afterSelection;
+      const spaceAfter = needsSpaceAfter ? ' ' : '';
+      
+      noteInput.value = beforeSelection + insertText + spaceAfter + afterSelection;
       noteInput.focus();
       noteInput.setSelectionRange(start + beforeText.length, start + beforeText.length + defaultText.length);
     } else {
@@ -420,13 +433,19 @@ function setupMarkdownToolbar() {
         const newBeforeSelection = beforeSelection.substring(0, beforeSelection.length - altBefore.length);
         const newAfterSelection = afterSelection.substring(altAfter.length);
         
+        // Check if we need to add a space after the tag
+        const spaceAfter = needsSpaceAfter ? ' ' : '';
+        
         // Apply the new formatting without spaces
-        noteInput.value = newBeforeSelection + beforeText + selectedText + afterText + newAfterSelection;
+        noteInput.value = newBeforeSelection + beforeText + selectedText + afterText + spaceAfter + newAfterSelection;
         noteInput.focus();
         noteInput.setSelectionRange(start - altBefore.length + beforeText.length, end - altBefore.length + beforeText.length);
       } else {
+        // Check if we need to add a space after the tag
+        const spaceAfter = needsSpaceAfter ? ' ' : '';
+        
         // Apply the formatting without spaces
-        noteInput.value = beforeSelection + beforeText + selectedText + afterText + afterSelection;
+        noteInput.value = beforeSelection + beforeText + selectedText + afterText + spaceAfter + afterSelection;
         noteInput.focus();
         noteInput.setSelectionRange(start + beforeText.length, end + beforeText.length);
       }
