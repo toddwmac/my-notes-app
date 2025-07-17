@@ -45,7 +45,7 @@ function createNoteElement(noteText) {
     updateLocalStorage();
   });
   buttonsContainer.appendChild(deleteBtn);
-  
+
   // Append button container to note element
   noteEl.appendChild(buttonsContainer);
 
@@ -78,7 +78,7 @@ function updateMarkdownDisplay() {
   const noteInput = document.getElementById('note-input');
   const markdownDisplay = document.getElementById('markdown-display');
   const text = noteInput.value;
-  
+
   if (text.trim()) {
     // Use marked library to convert markdown to HTML
     const html = marked.parse(text);
@@ -157,7 +157,7 @@ window.onload = () => {
   document.getElementById('copy-markdown-btn').addEventListener('click', async () => {
     const markdownDisplay = document.getElementById('markdown-display');
     const htmlContent = markdownDisplay.innerHTML;
-    
+
     if (htmlContent && !htmlContent.includes('Start typing to see markdown preview')) {
       try {
         await navigator.clipboard.writeText(htmlContent);
@@ -198,51 +198,107 @@ window.onload = () => {
   // Initialize markdown display
   updateMarkdownDisplay();
   
+  // Select All button for input textarea
+  document.getElementById('select-all-input-btn').addEventListener('click', () => {
+    const noteInput = document.getElementById('note-input');
+    noteInput.focus();
+    noteInput.select();
+  });
+  
+  // Select All button for preview
+  document.getElementById('select-all-preview-btn').addEventListener('click', () => {
+    const markdownDisplay = document.getElementById('markdown-display');
+    
+    // Create a range and selection
+    const range = document.createRange();
+    const selection = window.getSelection();
+    
+    // Select the content of the markdown display
+    range.selectNodeContents(markdownDisplay);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  });
+  
+  // Copy Formatted Text button (like Windows right-click copy)
+  document.getElementById('copy-formatted-btn').addEventListener('click', async () => {
+    const markdownDisplay = document.getElementById('markdown-display');
+    
+    // First select the content
+    const range = document.createRange();
+    const selection = window.getSelection();
+    range.selectNodeContents(markdownDisplay);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    
+    try {
+      // Use the document.execCommand for formatted text copy (like right-click copy)
+      const success = document.execCommand('copy');
+      
+      if (success) {
+        const btn = document.getElementById('copy-formatted-btn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.style.backgroundColor = '#20c997';
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.backgroundColor = '';
+        }, 2000);
+      } else {
+        throw new Error('Copy command failed');
+      }
+    } catch (err) {
+      alert('Unable to copy formatted text: ' + err);
+    } finally {
+      // Clear selection
+      selection.removeAllRanges();
+    }
+  });
+
   // Markdown Help Modal functionality
   const markdownHelpModal = document.getElementById('markdown-help-modal');
   const markdownHelpBtn = document.getElementById('markdown-help-btn');
   const closeModalBtn = document.querySelector('.close-modal');
-  
+
   // Ensure modal is hidden by default
   markdownHelpModal.style.display = 'none';
-  
+
   // Show modal as popup when help button is clicked
   markdownHelpBtn.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
     markdownHelpModal.style.display = 'block';
-    
+
     // Add a small delay before applying focus to ensure modal is visible
     setTimeout(() => {
       closeModalBtn.focus();
     }, 100);
   });
-  
+
   // Close modal when close button is clicked
   closeModalBtn.addEventListener('click', () => {
     closeModal();
   });
-  
+
   // Function to close the modal with animation
   function closeModal() {
     // Add closing animation
     const modalContent = markdownHelpModal.querySelector('.modal-content');
     modalContent.style.animation = 'modalClose 0.2s ease-in forwards';
-    
+
     // Wait for animation to complete before hiding modal
     setTimeout(() => {
       markdownHelpModal.style.display = 'none';
       modalContent.style.animation = 'modalPop 0.3s ease-out';
     }, 200);
   }
-  
+
   // Close modal when clicking outside of it
   window.addEventListener('click', (event) => {
     if (event.target === markdownHelpModal) {
       closeModal();
     }
   });
-  
+
   // Close modal with Escape key
   window.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && markdownHelpModal.style.display === 'block') {

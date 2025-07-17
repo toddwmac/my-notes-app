@@ -21,7 +21,10 @@
   </div>
   <input type="file" id="file-input" accept=".txt" style="display:none" />
   <div id="note-container"></div>
-  <textarea id="note-input" placeholder="Write your note here..."></textarea>
+  <div class="editor-container">
+    <textarea id="note-input" placeholder="Write your note here..."></textarea>
+    <button id="select-all-input-btn" class="action-button" title="Select All Text">Select All</button>
+  </div>
   <div class="editor-actions">
     <button id="save-btn">Save Note</button>
     <button id="markdown-help-btn" class="icon-button" title="Markdown Help">?</button>
@@ -31,7 +34,11 @@
   <div id="markdown-panel">
     <div class="panel-header">
       <h3>Markdown Preview</h3>
-      <button id="copy-markdown-btn">Copy HTML</button>
+      <div class="panel-buttons">
+        <button id="select-all-preview-btn">Select All</button>
+        <button id="copy-formatted-btn">Copy Formatted</button>
+        <button id="copy-markdown-btn">Copy HTML</button>
+      </div>
     </div>
     <div id="markdown-display"></div>
   </div>

@@ -516,4 +516,76 @@ osing animation */
     transform: scale(0.7);
     opacity: 0;
   }
+}/* Ed
+itor container with select all button */
+.editor-container {
+  position: relative;
+  width: 80%;
+  max-width: 800px;
+}
+
+.action-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  font-size: 12px;
+  background-color: rgba(0, 123, 255, 0.8);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.action-button:hover {
+  opacity: 1;
+}
+
+.dark-mode .action-button {
+  background-color: rgba(70, 130, 180, 0.8);
+}
+
+/* Panel buttons container */
+.panel-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.panel-buttons button {
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+#select-all-preview-btn {
+  background-color: #6c757d;
+}
+
+#select-all-preview-btn:hover {
+  background-color: #5a6268;
+}
+
+#copy-formatted-btn {
+  background-color: #17a2b8;
+}
+
+#copy-formatted-btn:hover {
+  background-color: #138496;
+}
+
+.dark-mode #select-all-preview-btn {
+  background-color: #495057;
+}
+
+.dark-mode #select-all-preview-btn:hover {
+  background-color: #6c757d;
+}
+
+.dark-mode #copy-formatted-btn {
+  background-color: #0f6674;
+}
+
+.dark-mode #copy-formatted-btn:hover {
+  background-color: #17a2b8;
 }
