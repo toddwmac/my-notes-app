@@ -22,6 +22,15 @@
   <input type="file" id="file-input" accept=".txt" style="display:none" />
   <div id="note-container"></div>
   <div class="editor-container">
+    <div class="md-toolbar">
+      <button class="md-tool-btn" id="bold-btn" title="Bold (Ctrl+B)">B</button>
+      <button class="md-tool-btn" id="italic-btn" title="Italic (Ctrl+I)">I</button>
+      <button class="md-tool-btn" id="strike-btn" title="Strikethrough">S</button>
+      <div class="md-tool-divider"></div>
+      <button class="md-tool-btn" id="h1-btn" title="Header 1">H1</button>
+      <button class="md-tool-btn" id="h2-btn" title="Header 2">H2</button>
+      <button class="md-tool-btn" id="h3-btn" title="Header 3">H3</button>
+    </div>
     <textarea id="note-input" placeholder="Write your note here..."></textarea>
     <button id="select-all-input-btn" class="action-button" title="Select All Text">Select All</button>
   </div>
@@ -57,18 +66,21 @@
             <div class="markdown-code"># Heading 1</div>
             <div class="markdown-result">
               <h1 style="margin:0">Heading 1</h1>
+              <span class="app-support">(GitHub, Discord, Reddit, Notion, most Markdown editors)</span>
             </div>
           </div>
           <div class="cheatsheet-row">
             <div class="markdown-code">## Heading 2</div>
             <div class="markdown-result">
               <h2 style="margin:0">Heading 2</h2>
+              <span class="app-support">(GitHub, Discord, Reddit, Notion, most Markdown editors)</span>
             </div>
           </div>
           <div class="cheatsheet-row">
             <div class="markdown-code">### Heading 3</div>
             <div class="markdown-result">
               <h3 style="margin:0">Heading 3</h3>
+              <span class="app-support">(GitHub, Discord, Reddit, Notion, most Markdown editors)</span>
             </div>
           </div>
         </div>
@@ -77,23 +89,23 @@
           <h3>Emphasis</h3>
           <div class="cheatsheet-row">
             <div class="markdown-code">*Italic text*</div>
-            <div class="markdown-result"><em>Italic text</em></div>
+            <div class="markdown-result"><em>Italic text</em> <span class="app-support">(GitHub, Discord, Slack, WhatsApp)</span></div>
           </div>
           <div class="cheatsheet-row">
             <div class="markdown-code">_Italic text_</div>
-            <div class="markdown-result"><em>Italic text</em></div>
+            <div class="markdown-result"><em>Italic text</em> <span class="app-support">(GitHub, Reddit, Notion)</span></div>
           </div>
           <div class="cheatsheet-row">
             <div class="markdown-code">**Bold text**</div>
-            <div class="markdown-result"><strong>Bold text</strong></div>
+            <div class="markdown-result"><strong>Bold text</strong> <span class="app-support">(GitHub, Discord, Slack, WhatsApp)</span></div>
           </div>
           <div class="cheatsheet-row">
             <div class="markdown-code">__Bold text__</div>
-            <div class="markdown-result"><strong>Bold text</strong></div>
+            <div class="markdown-result"><strong>Bold text</strong> <span class="app-support">(GitHub, Reddit, Notion)</span></div>
           </div>
           <div class="cheatsheet-row">
             <div class="markdown-code">~~Strikethrough~~</div>
-            <div class="markdown-result"><del>Strikethrough</del></div>
+            <div class="markdown-result"><del>Strikethrough</del> <span class="app-support">(GitHub, Discord, Slack, Notion)</span></div>
           </div>
         </div>
 
@@ -114,6 +126,7 @@
                   </ul>
                 </li>
               </ul>
+              <span class="app-support">(GitHub, Discord, Notion, most Markdown editors)</span>
             </div>
           </div>
           <div class="cheatsheet-row">
@@ -131,6 +144,7 @@
                   </ol>
                 </li>
               </ol>
+              <span class="app-support">(GitHub, Discord, Notion, most Markdown editors)</span>
             </div>
           </div>
         </div>
@@ -139,11 +153,17 @@
           <h3>Links & Images</h3>
           <div class="cheatsheet-row">
             <div class="markdown-code">[Link text](https://example.com)</div>
-            <div class="markdown-result"><a href="#">Link text</a></div>
+            <div class="markdown-result">
+              <a href="#">Link text</a>
+              <span class="app-support">(GitHub, Discord, Reddit, Notion, most Markdown editors)</span>
+            </div>
           </div>
           <div class="cheatsheet-row">
             <div class="markdown-code">![Alt text](image-url.jpg)</div>
-            <div class="markdown-result">[Image: Alt text]</div>
+            <div class="markdown-result">
+              [Image: Alt text]
+              <span class="app-support">(GitHub, Discord, Notion, not supported in WhatsApp or Slack messages)</span>
+            </div>
           </div>
         </div>
 
@@ -151,13 +171,17 @@
           <h3>Code</h3>
           <div class="cheatsheet-row">
             <div class="markdown-code">`inline code`</div>
-            <div class="markdown-result"><code>inline code</code></div>
+            <div class="markdown-result">
+              <code>inline code</code>
+              <span class="app-support">(GitHub, Discord, Slack, Reddit, Notion)</span>
+            </div>
           </div>
           <div class="cheatsheet-row">
             <div class="markdown-code">```<br>code block<br>multiple lines<br>```</div>
             <div class="markdown-result">
               <pre style="margin:0"><code>code block
 multiple lines</code></pre>
+              <span class="app-support">(GitHub, Discord, not supported in WhatsApp or basic Slack messages)</span>
             </div>
           </div>
         </div>
@@ -168,6 +192,7 @@ multiple lines</code></pre>
             <div class="markdown-code">> This is a blockquote</div>
             <div class="markdown-result">
               <blockquote style="margin:0">This is a blockquote</blockquote>
+              <span class="app-support">(GitHub, Discord, Reddit, Notion, not supported in WhatsApp)</span>
             </div>
           </div>
         </div>
@@ -195,6 +220,7 @@ multiple lines</code></pre>
                   </tr>
                 </tbody>
               </table>
+              <span class="app-support">(GitHub, Notion, not supported in Discord, WhatsApp, or basic Slack messages)</span>
             </div>
           </div>
         </div>
@@ -215,6 +241,22 @@ multiple lines</code></pre>
             </ul>
           </div>
         </div>
+        
+        <div class="cheatsheet-section">
+          <h3>App Compatibility</h3>
+          <div class="cheatsheet-note">
+            <p><strong>App-Specific Markdown Support:</strong></p>
+            <ul>
+              <li><strong>WhatsApp:</strong> Supports *italic*, **bold**, and ~strikethrough~ (single tilde), but not code blocks, tables, or images</li>
+              <li><strong>Slack:</strong> Supports *italic*, **bold**, `code`, and ```code blocks```, but limited support for lists and no tables</li>
+              <li><strong>Discord:</strong> Good support for most markdown including *italic*, **bold**, `code`, ```code blocks```, and > blockquotes</li>
+              <li><strong>GitHub:</strong> Full markdown support including all formatting, tables, and code syntax highlighting</li>
+              <li><strong>Reddit:</strong> Good support for most markdown but with some limitations on complex formatting</li>
+              <li><strong>Notion:</strong> Excellent markdown support with additional custom syntax for advanced features</li>
+            </ul>
+            <p><strong>Tip:</strong> When writing for multiple platforms, stick to basic formatting like *italic*, **bold**, and simple lists for maximum compatibility.</p>
+          </div>
+        </div>
 
         <div class="cheatsheet-section">
           <h3>Horizontal Rule</h3>
@@ -222,6 +264,7 @@ multiple lines</code></pre>
             <div class="markdown-code">---</div>
             <div class="markdown-result">
               <hr style="margin:0">
+              <span class="app-support">(GitHub, Notion, Reddit, not supported in WhatsApp or basic Slack messages)</span>
             </div>
           </div>
         </div>

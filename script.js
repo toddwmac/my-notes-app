@@ -197,6 +197,9 @@ window.onload = () => {
 
   // Initialize markdown display
   updateMarkdownDisplay();
+  
+  // Setup markdown toolbar
+  setupMarkdownToolbar();
 
   // Select All button for input textarea
   document.getElementById('select-all-input-btn').addEventListener('click', () => {
@@ -369,3 +372,189 @@ window.onload = () => {
     }
   });
 };
+// Markdown Toolbar Functionality
+function setupMarkdownToolbar() {
+  const noteInput = document.getElementById('note-input');
+  
+  // Helper function to wrap selected text with markdown syntax
+  function wrapText(beforeText, afterText, defaultText) {
+    const start = noteInput.selectionStart;
+    const end = noteInput.selectionEnd;
+    const selectedText = noteInput.value.substring(start, end);
+    const beforeSelection = noteInput.value.substring(0, start);
+    const afterSelection = noteInput.value.substring(end);
+    
+    // If no text is selected, insert default text
+    if (start === end) {
+      const insertText = beforeText + defaultText + afterText;
+      noteInput.value = beforeSelection + insertText + afterSelection;
+      noteInput.focus();
+      noteInput.setSelectionRange(start + beforeText.length, start + beforeText.length + defaultText.length);
+    } else {
+      // Check if the selection already has this formatting
+      const checkBefore = noteInput.value.substring(Math.max(0, start - beforeText.length), start);
+      const checkAfter = noteInput.value.substring(end, Math.min(noteInput.value.length, end + afterText.length));
+      
+      if (checkBefore === beforeText && checkAfter === afterText) {
+        // Remove the formatting
+        noteInput.value = beforeSelection.substring(0, beforeSelection.length - beforeText.length) + 
+                          selectedText + 
+                          afterSelection.substring(afterText.length);
+        noteInput.focus();
+        noteInput.setSelectionRange(start - beforeText.length, end - beforeText.length);
+      } else {
+        // Apply the formatting
+        noteInput.value = beforeSelection + beforeText + selectedText + afterText + afterSelection;
+        noteInput.focus();
+        noteInput.setSelectionRange(start + beforeText.length, end + beforeText.length);
+      }
+    }
+    
+    // Update the markdown preview
+    updateMarkdownDisplay();
+  }
+  
+  // Bold button - cycles between ** and __
+  let boldState = 0; // 0 = **, 1 = __
+  document.getElementById('bold-btn').addEventListener('click', () => {
+    const formats = [
+      { before: '**', after: '**', default: 'bold text' },
+      { before: '__', after: '__', default: 'bold text' }
+    ];
+    
+    const format = formats[boldState];
+    wrapText(format.before, format.after, format.default);
+    
+    // Cycle to next format
+    boldState = (boldState + 1) % formats.length;
+  });
+  
+  // Italic button - cycles between * and _
+  let italicState = 0; // 0 = *, 1 = _
+  document.getElementById('italic-btn').addEventListener('click', () => {
+    const formats = [
+      { before: '*', after: '*', default: 'italic text' },
+      { before: '_', after: '_', default: 'italic text' }
+    ];
+    
+    const format = formats[italicState];
+    wrapText(format.before, format.after, format.default);
+    
+    // Cycle to next format
+    italicState = (italicState + 1) % formats.length;
+  });
+  
+  // Strikethrough button
+  document.getElementById('strike-btn').addEventListener('click', () => {
+    wrapText('~~', '~~', 'strikethrough text');
+  });
+  
+  // Header buttons
+  document.getElementById('h1-btn').addEventListener('click', () => {
+    const start = noteInput.selectionStart;
+    const lineStart = noteInput.value.lastIndexOf('\n', start);
+    const actualLineStart = lineStart === -1 ? 0 : lineStart + 1;
+    
+    // Check if line already starts with #
+    const lineEnd = noteInput.value.indexOf('\n', start);
+    const actualLineEnd = lineEnd === -1 ? noteInput.value.length : lineEnd;
+    const currentLine = noteInput.value.substring(actualLineStart, actualLineEnd);
+    
+    if (currentLine.startsWith('# ')) {
+      // Remove header
+      noteInput.value = noteInput.value.substring(0, lineStart) + 
+                        currentLine.substring(2) + 
+                        noteInput.value.substring(lineStart + currentLine.length);
+    } else if (currentLine.startsWith('## ') || currentLine.startsWith('### ')) {
+      // Replace with H1
+      noteInput.value = noteInput.value.substring(0, lineStart) + 
+                        '# ' + currentLine.replace(/^#+\s/, '') + 
+                        noteInput.value.substring(lineStart + currentLine.length);
+    } else {
+      // Add H1
+      noteInput.value = noteInput.value.substring(0, lineStart) + 
+                        '# ' + currentLine + 
+                        noteInput.value.substring(lineStart + currentLine.length);
+    }
+    
+    noteInput.focus();
+    updateMarkdownDisplay();
+  });
+  
+  document.getElementById('h2-btn').addEventListener('click', () => {
+    const start = noteInput.selectionStart;
+    const lineStart = noteInput.value.lastIndexOf('\n', start);
+    const actualLineStart = lineStart === -1 ? 0 : lineStart + 1;
+    
+    // Check if line already starts with ##
+    const lineEnd = noteInput.value.indexOf('\n', start);
+    const actualLineEnd = lineEnd === -1 ? noteInput.value.length : lineEnd;
+    const currentLine = noteInput.value.substring(actualLineStart, actualLineEnd);
+    
+    if (currentLine.startsWith('## ')) {
+      // Remove header
+      noteInput.value = noteInput.value.substring(0, lineStart) + 
+                        currentLine.substring(3) + 
+                        noteInput.value.substring(lineStart + currentLine.length);
+    } else if (currentLine.startsWith('# ') || currentLine.startsWith('### ')) {
+      // Replace with H2
+      noteInput.value = noteInput.value.substring(0, lineStart) + 
+                        '## ' + currentLine.replace(/^#+\s/, '') + 
+                        noteInput.value.substring(lineStart + currentLine.length);
+    } else {
+      // Add H2
+      noteInput.value = noteInput.value.substring(0, lineStart) + 
+                        '## ' + currentLine + 
+                        noteInput.value.substring(lineStart + currentLine.length);
+    }
+    
+    noteInput.focus();
+    updateMarkdownDisplay();
+  });
+  
+  document.getElementById('h3-btn').addEventListener('click', () => {
+    const start = noteInput.selectionStart;
+    const lineStart = noteInput.value.lastIndexOf('\n', start);
+    const actualLineStart = lineStart === -1 ? 0 : lineStart + 1;
+    
+    // Check if line already starts with ###
+    const lineEnd = noteInput.value.indexOf('\n', start);
+    const actualLineEnd = lineEnd === -1 ? noteInput.value.length : lineEnd;
+    const currentLine = noteInput.value.substring(actualLineStart, actualLineEnd);
+    
+    if (currentLine.startsWith('### ')) {
+      // Remove header
+      noteInput.value = noteInput.value.substring(0, lineStart) + 
+                        currentLine.substring(4) + 
+                        noteInput.value.substring(lineStart + currentLine.length);
+    } else if (currentLine.startsWith('# ') || currentLine.startsWith('## ')) {
+      // Replace with H3
+      noteInput.value = noteInput.value.substring(0, lineStart) + 
+                        '### ' + currentLine.replace(/^#+\s/, '') + 
+                        noteInput.value.substring(lineStart + currentLine.length);
+    } else {
+      // Add H3
+      noteInput.value = noteInput.value.substring(0, lineStart) + 
+                        '### ' + currentLine + 
+                        noteInput.value.substring(lineStart + currentLine.length);
+    }
+    
+    noteInput.focus();
+    updateMarkdownDisplay();
+  });
+  
+  // Add keyboard shortcuts
+  noteInput.addEventListener('keydown', (e) => {
+    // Bold: Ctrl+B
+    if (e.ctrlKey && e.key === 'b') {
+      e.preventDefault();
+      document.getElementById('bold-btn').click();
+    }
+    
+    // Italic: Ctrl+I
+    if (e.ctrlKey && e.key === 'i') {
+      e.preventDefault();
+      document.getElementById('italic-btn').click();
+    }
+  });
+}
