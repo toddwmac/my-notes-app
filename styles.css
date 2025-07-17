@@ -689,4 +689,22 @@ support styling in cheat sheet */
 
 .dark-mode .app-support {
   color: #adb5bd;
+}/
+* Dark Mode Toggle Button */
+#dark-mode-toggle {
+  background-color: #000;
+  color: #fff;
+}
+
+#dark-mode-toggle:hover {
+  background-color: #333;
+}
+
+.dark-mode #dark-mode-toggle {
+  background-color: #444;
+  color: #fff;
+}
+
+.dark-mode #dark-mode-toggle:hover {
+  background-color: #666;
 }
