@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Todd's Quick Notes</title>
@@ -8,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
   <h1>Todd's Quick Notes</h1>
   <!-- Added Clear All Notes button -->
@@ -22,7 +24,7 @@
   <div id="note-container"></div>
   <textarea id="note-input" placeholder="Write your note here..."></textarea>
   <button id="save-btn">Save Note</button>
-  
+
   <!-- Markdown Display Panel -->
   <div id="markdown-panel">
     <div class="panel-header">
@@ -31,7 +33,7 @@
     </div>
     <div id="markdown-display"></div>
   </div>
-  
+
   <!-- Markdown Help Modal -->
   <div id="markdown-help-modal" class="modal">
     <div class="modal-content">
@@ -44,18 +46,24 @@
           <h3>Headers</h3>
           <div class="cheatsheet-row">
             <div class="markdown-code"># Heading 1</div>
-            <div class="markdown-result"><h1 style="margin:0">Heading 1</h1></div>
+            <div class="markdown-result">
+              <h1 style="margin:0">Heading 1</h1>
+            </div>
           </div>
           <div class="cheatsheet-row">
             <div class="markdown-code">## Heading 2</div>
-            <div class="markdown-result"><h2 style="margin:0">Heading 2</h2></div>
+            <div class="markdown-result">
+              <h2 style="margin:0">Heading 2</h2>
+            </div>
           </div>
           <div class="cheatsheet-row">
             <div class="markdown-code">### Heading 3</div>
-            <div class="markdown-result"><h3 style="margin:0">Heading 3</h3></div>
+            <div class="markdown-result">
+              <h3 style="margin:0">Heading 3</h3>
+            </div>
           </div>
         </div>
-        
+
         <div class="cheatsheet-section">
           <h3>Emphasis</h3>
           <div class="cheatsheet-row">
@@ -79,7 +87,7 @@
             <div class="markdown-result"><del>Strikethrough</del></div>
           </div>
         </div>
-        
+
         <div class="cheatsheet-section">
           <h3>Lists</h3>
           <div class="cheatsheet-row">
@@ -117,7 +125,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="cheatsheet-section">
           <h3>Links & Images</h3>
           <div class="cheatsheet-row">
@@ -129,7 +137,7 @@
             <div class="markdown-result">[Image: Alt text]</div>
           </div>
         </div>
-        
+
         <div class="cheatsheet-section">
           <h3>Code</h3>
           <div class="cheatsheet-row">
@@ -144,7 +152,7 @@ multiple lines</code></pre>
             </div>
           </div>
         </div>
-        
+
         <div class="cheatsheet-section">
           <h3>Blockquotes</h3>
           <div class="cheatsheet-row">
@@ -154,14 +162,14 @@ multiple lines</code></pre>
             </div>
           </div>
         </div>
-        
+
         <div class="cheatsheet-section">
           <h3>Tables</h3>
           <div class="cheatsheet-row">
             <div class="markdown-code">
               | Header 1 | Header 2 |<br>
               | -------- | -------- |<br>
-              | Cell 1   | Cell 2   |
+              | Cell 1 | Cell 2 |
             </div>
             <div class="markdown-result">
               <table style="margin:0">
@@ -181,7 +189,7 @@ multiple lines</code></pre>
             </div>
           </div>
         </div>
-        
+
         <div class="cheatsheet-section">
           <h3>Line Breaks & Paragraphs</h3>
           <div class="cheatsheet-note">
@@ -198,12 +206,14 @@ multiple lines</code></pre>
             </ul>
           </div>
         </div>
-        
+
         <div class="cheatsheet-section">
           <h3>Horizontal Rule</h3>
           <div class="cheatsheet-row">
             <div class="markdown-code">---</div>
-            <div class="markdown-result"><hr style="margin:0"></div>
+            <div class="markdown-result">
+              <hr style="margin:0">
+            </div>
           </div>
         </div>
       </div>
@@ -213,4 +223,5 @@ multiple lines</code></pre>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="script.js"></script>
 </body>
+
 </html>
