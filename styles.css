@@ -593,10 +593,13 @@ button:hover {
 
 .dark-mode #copy-formatted-btn:hover {
   background-color: #17a2b8;
-}/
-* Markdown Toolbar Styles */
+}
+
+/* Markdown Toolbar Styles */
 .md-toolbar {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   background-color: #f8f9fa;
   border: 1px solid #ddd;
   border-bottom: none;
@@ -604,6 +607,8 @@ button:hover {
   border-top-right-radius: 8px;
   padding: 5px;
   gap: 5px;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .md-tool-btn {

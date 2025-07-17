@@ -395,6 +395,17 @@ function setupMarkdownToolbar() {
       const checkBefore = noteInput.value.substring(Math.max(0, start - beforeText.length), start);
       const checkAfter = noteInput.value.substring(end, Math.min(noteInput.value.length, end + afterText.length));
       
+      // Check for alternate formatting (for cycling between ** and __)
+      const altFormats = {
+        '**': '__',
+        '__': '**',
+        '*': '_',
+        '_': '*'
+      };
+      
+      const altBefore = altFormats[beforeText];
+      const altAfter = altFormats[afterText];
+      
       if (checkBefore === beforeText && checkAfter === afterText) {
         // Remove the formatting
         noteInput.value = beforeSelection.substring(0, beforeSelection.length - beforeText.length) + 
@@ -402,8 +413,19 @@ function setupMarkdownToolbar() {
                           afterSelection.substring(afterText.length);
         noteInput.focus();
         noteInput.setSelectionRange(start - beforeText.length, end - beforeText.length);
+      } else if (altBefore && altAfter && 
+                 noteInput.value.substring(Math.max(0, start - altBefore.length), start) === altBefore && 
+                 noteInput.value.substring(end, Math.min(noteInput.value.length, end + altAfter.length)) === altAfter) {
+        // Remove alternate formatting and apply new formatting
+        const newBeforeSelection = beforeSelection.substring(0, beforeSelection.length - altBefore.length);
+        const newAfterSelection = afterSelection.substring(altAfter.length);
+        
+        // Apply the new formatting without spaces
+        noteInput.value = newBeforeSelection + beforeText + selectedText + afterText + newAfterSelection;
+        noteInput.focus();
+        noteInput.setSelectionRange(start - altBefore.length + beforeText.length, end - altBefore.length + beforeText.length);
       } else {
-        // Apply the formatting
+        // Apply the formatting without spaces
         noteInput.value = beforeSelection + beforeText + selectedText + afterText + afterSelection;
         noteInput.focus();
         noteInput.setSelectionRange(start + beforeText.length, end + beforeText.length);
@@ -462,19 +484,19 @@ function setupMarkdownToolbar() {
     
     if (currentLine.startsWith('# ')) {
       // Remove header
-      noteInput.value = noteInput.value.substring(0, lineStart) + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
                         currentLine.substring(2) + 
-                        noteInput.value.substring(lineStart + currentLine.length);
+                        noteInput.value.substring(actualLineEnd);
     } else if (currentLine.startsWith('## ') || currentLine.startsWith('### ')) {
       // Replace with H1
-      noteInput.value = noteInput.value.substring(0, lineStart) + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
                         '# ' + currentLine.replace(/^#+\s/, '') + 
-                        noteInput.value.substring(lineStart + currentLine.length);
+                        noteInput.value.substring(actualLineEnd);
     } else {
       // Add H1
-      noteInput.value = noteInput.value.substring(0, lineStart) + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
                         '# ' + currentLine + 
-                        noteInput.value.substring(lineStart + currentLine.length);
+                        noteInput.value.substring(actualLineEnd);
     }
     
     noteInput.focus();
@@ -493,19 +515,19 @@ function setupMarkdownToolbar() {
     
     if (currentLine.startsWith('## ')) {
       // Remove header
-      noteInput.value = noteInput.value.substring(0, lineStart) + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
                         currentLine.substring(3) + 
-                        noteInput.value.substring(lineStart + currentLine.length);
+                        noteInput.value.substring(actualLineEnd);
     } else if (currentLine.startsWith('# ') || currentLine.startsWith('### ')) {
       // Replace with H2
-      noteInput.value = noteInput.value.substring(0, lineStart) + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
                         '## ' + currentLine.replace(/^#+\s/, '') + 
-                        noteInput.value.substring(lineStart + currentLine.length);
+                        noteInput.value.substring(actualLineEnd);
     } else {
       // Add H2
-      noteInput.value = noteInput.value.substring(0, lineStart) + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
                         '## ' + currentLine + 
-                        noteInput.value.substring(lineStart + currentLine.length);
+                        noteInput.value.substring(actualLineEnd);
     }
     
     noteInput.focus();
@@ -524,19 +546,19 @@ function setupMarkdownToolbar() {
     
     if (currentLine.startsWith('### ')) {
       // Remove header
-      noteInput.value = noteInput.value.substring(0, lineStart) + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
                         currentLine.substring(4) + 
-                        noteInput.value.substring(lineStart + currentLine.length);
+                        noteInput.value.substring(actualLineEnd);
     } else if (currentLine.startsWith('# ') || currentLine.startsWith('## ')) {
       // Replace with H3
-      noteInput.value = noteInput.value.substring(0, lineStart) + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
                         '### ' + currentLine.replace(/^#+\s/, '') + 
-                        noteInput.value.substring(lineStart + currentLine.length);
+                        noteInput.value.substring(actualLineEnd);
     } else {
       // Add H3
-      noteInput.value = noteInput.value.substring(0, lineStart) + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
                         '### ' + currentLine + 
-                        noteInput.value.substring(lineStart + currentLine.length);
+                        noteInput.value.substring(actualLineEnd);
     }
     
     noteInput.focus();
