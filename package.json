@@ -1,0 +1,13 @@
+{
+  "name": "my-notes-app",
+  "version": "2.0.0",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "@replit/database": "^3.0.0"
+  }
+}

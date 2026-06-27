@@ -1,17 +1,19 @@
-// Function to update local storage with current notes
+// Function to update local storage cache with current notes
 function updateLocalStorage() {
   const notes = [];
   document.querySelectorAll('.note').forEach(noteEl => {
+    const noteId = noteEl.getAttribute('data-note-id');
     const noteText = noteEl.querySelector('.note-text').textContent;
-    notes.push(noteText);
+    notes.push({ id: noteId, text: noteText });
   });
   localStorage.setItem('notes', JSON.stringify(notes));
 }
 
 // Function to create a note element with Save and Delete buttons
-function createNoteElement(noteText) {
+function createNoteElement(noteText, id) {
   const noteEl = document.createElement('div');
   noteEl.className = 'note';
+  noteEl.setAttribute('data-note-id', id);
 
   const textEl = document.createElement('span');
   textEl.className = 'note-text';
@@ -40,9 +42,31 @@ function createNoteElement(noteText) {
   // Delete button
   const deleteBtn = document.createElement('button');
   deleteBtn.textContent = 'Delete';
-  deleteBtn.addEventListener('click', () => {
-    noteEl.remove();
-    updateLocalStorage();
+  deleteBtn.addEventListener('click', async () => {
+    const noteId = noteEl.getAttribute('data-note-id');
+    if (!noteId) {
+      // No ID, just remove locally
+      noteEl.remove();
+      updateLocalStorage();
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/notes/${noteId}`, {
+        method: 'DELETE'
+      });
+      console.log('Delete note response status:', response.status);
+
+      if (response.ok) {
+        noteEl.remove();
+        updateLocalStorage();
+      } else {
+        alert('Failed to delete note');
+      }
+    } catch (err) {
+      console.error('Failed to delete note:', err);
+      alert('Failed to delete note: ' + err.message);
+    }
   });
   buttonsContainer.appendChild(deleteBtn);
 
@@ -53,15 +77,35 @@ function createNoteElement(noteText) {
 }
 
 // Handle saving new note
-document.getElementById('save-btn').addEventListener('click', () => {
+document.getElementById('save-btn').addEventListener('click', async () => {
   const noteInput = document.getElementById('note-input');
   const noteText = noteInput.value.trim();
   if (noteText) {
-    const noteContainer = document.getElementById('note-container');
-    const newNoteEl = createNoteElement(noteText);
-    noteContainer.appendChild(newNoteEl);
-    updateLocalStorage();
-    noteInput.value = '';
+    try {
+      const response = await fetch('/api/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: noteText })
+      });
+      console.log('Save note response status:', response.status);
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(`HTTP ${response.status}: ${errorData.error || response.statusText}`);
+      }
+
+      const noteData = await response.json();
+      console.log('Saved note:', noteData);
+
+      const noteContainer = document.getElementById('note-container');
+      const newNoteEl = createNoteElement(noteData.text, noteData.id);
+      noteContainer.appendChild(newNoteEl);
+      updateLocalStorage();
+      noteInput.value = '';
+    } catch (err) {
+      console.error('Failed to save note:', err);
+      alert('Failed to save note: ' + err.message);
+    }
   }
 });
 
@@ -72,6 +116,67 @@ document.getElementById('clear-btn').addEventListener('click', () => {
   // Update markdown display
   updateMarkdownDisplay();
 });
+
+// Function to load notes from the API
+async function loadNotes() {
+  try {
+    const response = await fetch('/api/notes');
+    console.log('Load notes response status:', response.status);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const notes = await response.json();
+    console.log('Loaded notes:', notes);
+
+    const noteContainer = document.getElementById('note-container');
+    noteContainer.innerHTML = '';
+
+    notes.forEach(note => {
+      const noteEl = createNoteElement(note.text, note.id);
+      noteContainer.appendChild(noteEl);
+    });
+
+    updateLocalStorage();
+  } catch (err) {
+    console.error('Failed to load notes:', err);
+    alert('Failed to load notes: ' + err.message);
+  }
+}
+
+// One-time migration: upload local notes to server if server is empty
+async function migrateLocalNotes() {
+  const migratedFlag = localStorage.getItem('notes_migrated');
+  if (migratedFlag) return;
+
+  try {
+    const response = await fetch('/api/notes');
+    const serverNotes = await response.json();
+
+    if (serverNotes.length === 0) {
+      // Server is empty, upload local notes
+      const localNotes = JSON.parse(localStorage.getItem('notes') || '[]');
+      for (const noteText of localNotes) {
+        if (noteText && noteText.trim()) {
+          const saveResponse = await fetch('/api/notes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: noteText })
+          });
+          const noteData = await saveResponse.json();
+          const noteContainer = document.getElementById('note-container');
+          const noteEl = createNoteElement(noteData.text, noteData.id);
+          noteContainer.appendChild(noteEl);
+        }
+      }
+      updateLocalStorage();
+      localStorage.setItem('notes_migrated', 'true');
+    }
+  } catch (err) {
+    console.error('Migration failed:', err);
+  }
+}
 
 // Function to update markdown display
 function updateMarkdownDisplay() {
@@ -88,8 +193,9 @@ function updateMarkdownDisplay() {
   }
 }
 
-// On window load, load notes from localStorage
-window.onload = () => {
+// On window load, load notes from server and perform migration
+window.onload = async () => {
+  // Load dark mode preference
   document.getElementById('dark-mode-toggle').addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
     
@@ -102,15 +208,9 @@ window.onload = () => {
     }
   });
 
-  const savedNotes = localStorage.getItem('notes');
-  if (savedNotes) {
-    const notesArray = JSON.parse(savedNotes);
-    const noteContainer = document.getElementById('note-container');
-    notesArray.forEach(noteText => {
-      const noteEl = createNoteElement(noteText);
-      noteContainer.appendChild(noteEl);
-    });
-  }
+  // Load notes from API and perform migration
+  await loadNotes();
+  await migrateLocalNotes();
 
   // Add event listeners for new features after DOM is ready
   // Load note from file
@@ -329,7 +429,6 @@ window.onload = () => {
   });
 
   // Markdown Help Modal functionality
-  const markdownHelpModal = document.getElementById('markdown-help-modal');
   const markdownHelpBtn = document.getElementById('markdown-help-btn');
   const closeModalBtn = document.querySelector('.close-modal');
 
@@ -379,6 +478,179 @@ window.onload = () => {
       closeModal();
     }
   });
+
+  // Select All button for input textarea
+  document.getElementById('select-all-input-btn').addEventListener('click', () => {
+    const noteInput = document.getElementById('note-input');
+    noteInput.focus();
+    noteInput.select();
+
+    // Provide visual feedback
+    const btn = document.getElementById('select-all-input-btn');
+    const originalText = btn.textContent;
+    btn.textContent = 'Selected!';
+    setTimeout(() => {
+      btn.textContent = originalText;
+    }, 1000);
+  });
+
+  // Select All button for preview
+  document.getElementById('select-all-preview-btn').addEventListener('click', () => {
+    const markdownDisplay = document.getElementById('markdown-display');
+
+    if (window.getSelection && document.createRange) {
+      // Modern browsers
+      const selection = window.getSelection();
+      const range = document.createRange();
+
+      try {
+        // Select the content of the markdown display
+        range.selectNodeContents(markdownDisplay);
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        // Provide visual feedback
+        const btn = document.getElementById('select-all-preview-btn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Selected!';
+        setTimeout(() => {
+          btn.textContent = originalText;
+        }, 1000);
+      } catch (e) {
+        alert('Could not select text: ' + e);
+      }
+    } else if (document.body.createTextRange) {
+      // IE fallback
+      const range = document.body.createTextRange();
+      range.moveToElementText(markdownDisplay);
+      range.select();
+    }
+  });
+
+  // Copy Formatted Text button (like Windows right-click copy)
+  document.getElementById('copy-formatted-btn').addEventListener('click', async () => {
+    const markdownDisplay = document.getElementById('markdown-display');
+
+    // Create a temporary div to hold the content
+    // This ensures we get the formatted text, not the HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.left = '-9999px';
+    tempDiv.style.top = '0';
+
+    // Clone the markdown display content to preserve formatting
+    const clone = markdownDisplay.cloneNode(true);
+    tempDiv.appendChild(clone);
+    document.body.appendChild(tempDiv);
+
+    // Select the cloned content
+    const range = document.createRange();
+    const selection = window.getSelection();
+    range.selectNodeContents(clone);
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    try {
+      // Use document.execCommand which preserves formatting on Windows
+      const success = document.execCommand('copy');
+
+      if (success) {
+        const btn = document.getElementById('copy-formatted-btn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.style.backgroundColor = '#20c997';
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.backgroundColor = '';
+        }, 2000);
+      } else {
+        throw new Error('Copy command failed');
+      }
+    } catch (err) {
+      // Try an alternative approach for Windows
+      try {
+        // For Windows, we can try using the Clipboard API with 'text/html' format
+        const htmlContent = markdownDisplay.innerHTML;
+        const plainText = markdownDisplay.innerText || markdownDisplay.textContent;
+
+        const clipboardItem = new ClipboardItem({
+          'text/html': new Blob([htmlContent], { type: 'text/html' }),
+          'text/plain': new Blob([plainText], { type: 'text/plain' })
+        });
+
+        await navigator.clipboard.write([clipboardItem]);
+
+        const btn = document.getElementById('copy-formatted-btn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.style.backgroundColor = '#20c997';
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.backgroundColor = '';
+        }, 2000);
+      } catch (clipErr) {
+        alert('Unable to copy formatted text: ' + err);
+      }
+    } finally {
+      // Clean up
+      selection.removeAllRanges();
+      document.body.removeChild(tempDiv);
+    }
+  });
+
+  // Markdown Help Modal functionality
+  const markdownHelpBtn = document.getElementById('markdown-help-btn');
+  const closeModalBtn = document.querySelector('.close-modal');
+
+  // Ensure modal is hidden by default
+  markdownHelpModal.style.display = 'none';
+
+  // Show modal as popup when help button is clicked
+  markdownHelpBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    markdownHelpModal.style.display = 'block';
+
+    // Add a small delay before applying focus to ensure modal is visible
+    setTimeout(() => {
+      closeModalBtn.focus();
+    }, 100);
+  });
+
+  // Close modal when close button is clicked
+  closeModalBtn.addEventListener('click', () => {
+    closeModal();
+  });
+
+  // Function to close the modal with animation
+  function closeModal() {
+    // Add closing animation
+    const modalContent = markdownHelpModal.querySelector('.modal-content');
+    modalContent.style.animation = 'modalClose 0.2s ease-in forwards';
+
+    // Wait for animation to complete before hiding modal
+    setTimeout(() => {
+      markdownHelpModal.style.display = 'none';
+      modalContent.style.animation = 'modalPop 0.3s ease-out';
+    }, 200);
+  }
+
+  // Close modal when clicking outside of it
+  window.addEventListener('click', (event) => {
+    if (event.target === markdownHelpModal) {
+      closeModal();
+    }
+  });
+
+  // Close modal with Escape key
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && markdownHelpModal.style.display === 'block') {
+      closeModal();
+    }
+  });
+
+  // Setup markdown toolbar
+  setupMarkdownToolbar();
 };
 // Markdown Toolbar Functionality
 function setupMarkdownToolbar() {

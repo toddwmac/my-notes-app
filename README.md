@@ -1,7 +1,7 @@
 # Todd's Quick Notes - Markdown Editor
 
 ## Overview
-This is a minimalistic web application for note-taking with real-time markdown preview. The app features a simple user interface for creating, viewing, and editing notes with markdown formatting support. It uses local storage to save notes and can be hosted on GitHub Pages.
+This is a minimalistic web application for note-taking with real-time markdown preview. The app features a simple user interface for creating, viewing, and editing notes with markdown formatting support. It uses **Replit Database** for server-side persistence, allowing you to access your notes from any device.
 
 ## Features
 
@@ -20,7 +20,7 @@ This is a minimalistic web application for note-taking with real-time markdown p
 
 ### User Experience
 - **Dark Mode**: Toggle between light and dark themes for comfortable editing
-- **Local Storage**: Notes are automatically saved in browser storage
+- **Cross-Device Access**: Notes are saved to Replit Database, accessible from any device/phone
 - **Clean Interface**: Distraction-free writing environment
 - **Instant Updates**: Markdown preview updates as you type
 
@@ -28,14 +28,39 @@ This is a minimalistic web application for note-taking with real-time markdown p
 - `index.html`: The main HTML file that defines the structure of the app.
 - `styles.css`: The CSS file that styles the app.
 - `script.js`: The JavaScript file that handles the app's functionality.
+- `server.js`: Node.js Express server with REST API.
+- `store.js`: Storage abstraction layer for Replit Database and local JSON fallback.
 
 ## How It Works
-1. **Creating Notes**: Users can write a note in the textarea and click the "Save Note" button to save the note. The note is displayed in the note container and saved in local storage.
+1. **Creating Notes**: Users can write a note in the textarea and click the "Save Note" button to save the note. The note is sent to the server and saved in the Replit Database.
 2. **Saving Notes to File**: Each note has a "Save to File" button that allows users to save the note as a text file on their local machine. The file name is prefixed with "Todds_Quick_Note" followed by a timestamp.
-3. **Deleting Notes**: Each note has a "Delete" button that allows users to delete the note. The note is removed from the note container and local storage is updated.
-4. **Clearing All Notes**: The "Clear All Notes" button clears all notes from the note container and local storage.
+3. **Deleting Notes**: Each note has a "Delete" button that allows users to delete the note. The note is removed from the database.
+4. **Cross-Device Sync**: Notes are stored server-side, so you can access them from any device (phone, another computer) by visiting your Replit URL.
 
-## Hosting on GitHub Pages
-1. Create a GitHub repository and push your code.
-2. In the repository settings, enable GitHub Pages and set the source to the main branch.
-3. Your app will be available at `https://<your-username>.github.io/<repository-name>`.
+## Hosting on Replit
+
+### Import from GitHub
+1. Push your code to GitHub (if you haven't already): `git push origin main`
+2. Go to [replit.com](https://replit.com) and sign in
+3. Click "Create Repl" → "Import from GitHub"
+4. Enter your repository: `toddwmac/my-notes-app`
+5. Choose "Node.js" as the runtime, click "Import"
+
+### Starting the App
+Once imported:
+1. Your repl will automatically install dependencies
+2. Click the "Run" button or press Enter
+3. Your app will be available at your unique Replit URL (e.g., `my-notes-app.toddwmac.repl.co`)
+
+### Using on Multiple Devices
+Simply visit your Replit URL on any device (phone, tablet, another computer). Notes are automatically synced via the Replit Database backend.
+
+### Local Development
+To run locally (without Replit):
+```bash
+npm install
+npm start
+```
+Then open `http://localhost:3000`. Notes will be saved locally in `notes.local.json` on your computer.
+
+**Important:** You must ensure that your browser allows JavaScript execution from `localhost:3000`.

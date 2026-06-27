@@ -1,0 +1,3 @@
+run = "npm start"
+entrypoint = "server.js"
+hidden = [".config", "node_modules"]
