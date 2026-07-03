@@ -198,7 +198,7 @@ window.onload = async () => {
   // Load dark mode preference
   document.getElementById('dark-mode-toggle').addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
-    
+
     // Update button text based on current mode
     const darkModeBtn = document.getElementById('dark-mode-toggle');
     if (document.body.classList.contains('dark-mode')) {
@@ -305,179 +305,6 @@ window.onload = async () => {
 
   // Initialize markdown display
   updateMarkdownDisplay();
-  
-  // Setup markdown toolbar
-  setupMarkdownToolbar();
-
-  // Select All button for input textarea
-  document.getElementById('select-all-input-btn').addEventListener('click', () => {
-    const noteInput = document.getElementById('note-input');
-    noteInput.focus();
-    noteInput.select();
-    
-    // Provide visual feedback
-    const btn = document.getElementById('select-all-input-btn');
-    const originalText = btn.textContent;
-    btn.textContent = 'Selected!';
-    setTimeout(() => {
-      btn.textContent = originalText;
-    }, 1000);
-  });
-  
-  // Select All button for preview
-  document.getElementById('select-all-preview-btn').addEventListener('click', () => {
-    const markdownDisplay = document.getElementById('markdown-display');
-    
-    if (window.getSelection && document.createRange) {
-      // Modern browsers
-      const selection = window.getSelection();
-      const range = document.createRange();
-      
-      try {
-        // Select the content of the markdown display
-        range.selectNodeContents(markdownDisplay);
-        selection.removeAllRanges();
-        selection.addRange(range);
-        
-        // Provide visual feedback
-        const btn = document.getElementById('select-all-preview-btn');
-        const originalText = btn.textContent;
-        btn.textContent = 'Selected!';
-        setTimeout(() => {
-          btn.textContent = originalText;
-        }, 1000);
-      } catch (e) {
-        alert('Could not select text: ' + e);
-      }
-    } else if (document.body.createTextRange) {
-      // IE fallback
-      const range = document.body.createTextRange();
-      range.moveToElementText(markdownDisplay);
-      range.select();
-    }
-  });
-
-  // Copy Formatted Text button (like Windows right-click copy)
-  document.getElementById('copy-formatted-btn').addEventListener('click', async () => {
-    const markdownDisplay = document.getElementById('markdown-display');
-
-    // Create a temporary div to hold the content
-    // This ensures we get the formatted text, not the HTML
-    const tempDiv = document.createElement('div');
-    tempDiv.style.position = 'absolute';
-    tempDiv.style.left = '-9999px';
-    tempDiv.style.top = '0';
-    
-    // Clone the markdown display content to preserve formatting
-    const clone = markdownDisplay.cloneNode(true);
-    tempDiv.appendChild(clone);
-    document.body.appendChild(tempDiv);
-    
-    // Select the cloned content
-    const range = document.createRange();
-    const selection = window.getSelection();
-    range.selectNodeContents(clone);
-    selection.removeAllRanges();
-    selection.addRange(range);
-
-    try {
-      // Use document.execCommand which preserves formatting on Windows
-      const success = document.execCommand('copy');
-
-      if (success) {
-        const btn = document.getElementById('copy-formatted-btn');
-        const originalText = btn.textContent;
-        btn.textContent = 'Copied!';
-        btn.style.backgroundColor = '#20c997';
-        setTimeout(() => {
-          btn.textContent = originalText;
-          btn.style.backgroundColor = '';
-        }, 2000);
-      } else {
-        throw new Error('Copy command failed');
-      }
-    } catch (err) {
-      // Try an alternative approach for Windows
-      try {
-        // For Windows, we can try using the Clipboard API with 'text/html' format
-        const htmlContent = markdownDisplay.innerHTML;
-        const plainText = markdownDisplay.innerText || markdownDisplay.textContent;
-        
-        const clipboardItem = new ClipboardItem({
-          'text/html': new Blob([htmlContent], { type: 'text/html' }),
-          'text/plain': new Blob([plainText], { type: 'text/plain' })
-        });
-        
-        await navigator.clipboard.write([clipboardItem]);
-        
-        const btn = document.getElementById('copy-formatted-btn');
-        const originalText = btn.textContent;
-        btn.textContent = 'Copied!';
-        btn.style.backgroundColor = '#20c997';
-        setTimeout(() => {
-          btn.textContent = originalText;
-          btn.style.backgroundColor = '';
-        }, 2000);
-      } catch (clipErr) {
-        alert('Unable to copy formatted text: ' + err);
-      }
-    } finally {
-      // Clean up
-      selection.removeAllRanges();
-      document.body.removeChild(tempDiv);
-    }
-  });
-
-  // Markdown Help Modal functionality
-  const markdownHelpBtn = document.getElementById('markdown-help-btn');
-  const closeModalBtn = document.querySelector('.close-modal');
-
-  // Ensure modal is hidden by default
-  markdownHelpModal.style.display = 'none';
-
-  // Show modal as popup when help button is clicked
-  markdownHelpBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    markdownHelpModal.style.display = 'block';
-
-    // Add a small delay before applying focus to ensure modal is visible
-    setTimeout(() => {
-      closeModalBtn.focus();
-    }, 100);
-  });
-
-  // Close modal when close button is clicked
-  closeModalBtn.addEventListener('click', () => {
-    closeModal();
-  });
-
-  // Function to close the modal with animation
-  function closeModal() {
-    // Add closing animation
-    const modalContent = markdownHelpModal.querySelector('.modal-content');
-    modalContent.style.animation = 'modalClose 0.2s ease-in forwards';
-
-    // Wait for animation to complete before hiding modal
-    setTimeout(() => {
-      markdownHelpModal.style.display = 'none';
-      modalContent.style.animation = 'modalPop 0.3s ease-out';
-    }, 200);
-  }
-
-  // Close modal when clicking outside of it
-  window.addEventListener('click', (event) => {
-    if (event.target === markdownHelpModal) {
-      closeModal();
-    }
-  });
-
-  // Close modal with Escape key
-  window.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && markdownHelpModal.style.display === 'block') {
-      closeModal();
-    }
-  });
 
   // Select All button for input textarea
   document.getElementById('select-all-input-btn').addEventListener('click', () => {
@@ -599,6 +426,7 @@ window.onload = async () => {
   });
 
   // Markdown Help Modal functionality
+  const markdownHelpModal = document.getElementById('markdown-help-modal');
   const markdownHelpBtn = document.getElementById('markdown-help-btn');
   const closeModalBtn = document.querySelector('.close-modal');
 
@@ -652,10 +480,11 @@ window.onload = async () => {
   // Setup markdown toolbar
   setupMarkdownToolbar();
 };
+
 // Markdown Toolbar Functionality
 function setupMarkdownToolbar() {
   const noteInput = document.getElementById('note-input');
-  
+
   // Helper function to wrap selected text with markdown syntax
   function wrapText(beforeText, afterText, defaultText) {
     const start = noteInput.selectionStart;
@@ -663,10 +492,10 @@ function setupMarkdownToolbar() {
     let selectedText = noteInput.value.substring(start, end);
     const beforeSelection = noteInput.value.substring(0, start);
     const afterSelection = noteInput.value.substring(end);
-    
+
     // Check if we need to add a space after the tag
-    const needsSpaceAfter = afterSelection.length > 0 && 
-                           !afterSelection.startsWith(' ') && 
+    const needsSpaceAfter = afterSelection.length > 0 &&
+                           !afterSelection.startsWith(' ') &&
                            !afterSelection.startsWith('\n') &&
                            !afterSelection.startsWith(',') &&
                            !afterSelection.startsWith('.') &&
@@ -674,12 +503,12 @@ function setupMarkdownToolbar() {
                            !afterSelection.startsWith(':') &&
                            !afterSelection.startsWith('!') &&
                            !afterSelection.startsWith('?');
-    
+
     // If no text is selected, insert default text
     if (start === end) {
       const insertText = beforeText + defaultText + afterText;
       const spaceAfter = needsSpaceAfter ? ' ' : '';
-      
+
       noteInput.value = beforeSelection + insertText + spaceAfter + afterSelection;
       noteInput.focus();
       noteInput.setSelectionRange(start + beforeText.length, start + beforeText.length + defaultText.length);
@@ -688,18 +517,18 @@ function setupMarkdownToolbar() {
       const originalLength = selectedText.length;
       const leadingSpaces = selectedText.match(/^\s*/)[0].length;
       const trailingSpaces = selectedText.match(/\s*$/)[0].length;
-      
+
       // Remove spaces from the beginning and end of the selection
       selectedText = selectedText.trim();
-      
+
       // Adjust selection start and end positions
       const adjustedStart = start + leadingSpaces;
       const adjustedEnd = end - trailingSpaces;
-      
+
       // Check if the selection already has this formatting
       const checkBefore = noteInput.value.substring(Math.max(0, adjustedStart - beforeText.length), adjustedStart);
       const checkAfter = noteInput.value.substring(adjustedEnd, Math.min(noteInput.value.length, adjustedEnd + afterText.length));
-      
+
       // Check for alternate formatting (for cycling between ** and __)
       const altFormats = {
         '**': '__',
@@ -707,56 +536,56 @@ function setupMarkdownToolbar() {
         '*': '_',
         '_': '*'
       };
-      
+
       const altBefore = altFormats[beforeText];
       const altAfter = altFormats[afterText];
-      
+
       // Reconstruct the text before and after the trimmed selection
       const newBeforeSelection = beforeSelection + noteInput.value.substring(start, adjustedStart);
       const newAfterSelection = noteInput.value.substring(adjustedEnd, end) + afterSelection;
-      
+
       if (checkBefore === beforeText && checkAfter === afterText) {
         // Remove the formatting
-        noteInput.value = newBeforeSelection.substring(0, newBeforeSelection.length - beforeText.length) + 
-                          selectedText + 
+        noteInput.value = newBeforeSelection.substring(0, newBeforeSelection.length - beforeText.length) +
+                          selectedText +
                           newAfterSelection.substring(afterText.length);
         noteInput.focus();
         noteInput.setSelectionRange(adjustedStart - beforeText.length, adjustedEnd - beforeText.length);
-      } else if (altBefore && altAfter && 
-                 noteInput.value.substring(Math.max(0, adjustedStart - altBefore.length), adjustedStart) === altBefore && 
+      } else if (altBefore && altAfter &&
+                 noteInput.value.substring(Math.max(0, adjustedStart - altBefore.length), adjustedStart) === altBefore &&
                  noteInput.value.substring(adjustedEnd, Math.min(noteInput.value.length, adjustedEnd + altAfter.length)) === altAfter) {
         // Remove alternate formatting and apply new formatting
         const altBeforeSelection = newBeforeSelection.substring(0, newBeforeSelection.length - altBefore.length);
         const altAfterSelection = newAfterSelection.substring(altAfter.length);
-        
+
         // Check if we need to add a space after the tag
         const spaceAfter = needsSpaceAfter ? ' ' : '';
-        
+
         // Apply the new formatting without spaces
         noteInput.value = altBeforeSelection + beforeText + selectedText + afterText + spaceAfter + altAfterSelection;
         noteInput.focus();
         noteInput.setSelectionRange(
-          altBeforeSelection.length + beforeText.length, 
+          altBeforeSelection.length + beforeText.length,
           altBeforeSelection.length + beforeText.length + selectedText.length
         );
       } else {
         // Check if we need to add a space after the tag
         const spaceAfter = needsSpaceAfter ? ' ' : '';
-        
+
         // Apply the formatting without spaces
         noteInput.value = newBeforeSelection + beforeText + selectedText + afterText + spaceAfter + newAfterSelection;
         noteInput.focus();
         noteInput.setSelectionRange(
-          newBeforeSelection.length + beforeText.length, 
+          newBeforeSelection.length + beforeText.length,
           newBeforeSelection.length + beforeText.length + selectedText.length
         );
       }
     }
-    
+
     // Update the markdown preview
     updateMarkdownDisplay();
   }
-  
+
   // Bold button - cycles between ** and __
   let boldState = 0; // 0 = **, 1 = __
   document.getElementById('bold-btn').addEventListener('click', () => {
@@ -764,14 +593,14 @@ function setupMarkdownToolbar() {
       { before: '**', after: '**', default: 'bold text' },
       { before: '__', after: '__', default: 'bold text' }
     ];
-    
+
     const format = formats[boldState];
     wrapText(format.before, format.after, format.default);
-    
+
     // Cycle to next format
     boldState = (boldState + 1) % formats.length;
   });
-  
+
   // Italic button - cycles between * and _
   let italicState = 0; // 0 = *, 1 = _
   document.getElementById('italic-btn').addEventListener('click', () => {
@@ -779,113 +608,113 @@ function setupMarkdownToolbar() {
       { before: '*', after: '*', default: 'italic text' },
       { before: '_', after: '_', default: 'italic text' }
     ];
-    
+
     const format = formats[italicState];
     wrapText(format.before, format.after, format.default);
-    
+
     // Cycle to next format
     italicState = (italicState + 1) % formats.length;
   });
-  
+
   // Strikethrough button
   document.getElementById('strike-btn').addEventListener('click', () => {
     wrapText('~~', '~~', 'strikethrough text');
   });
-  
+
   // Header buttons
   document.getElementById('h1-btn').addEventListener('click', () => {
     const start = noteInput.selectionStart;
     const lineStart = noteInput.value.lastIndexOf('\n', start);
     const actualLineStart = lineStart === -1 ? 0 : lineStart + 1;
-    
+
     // Check if line already starts with #
     const lineEnd = noteInput.value.indexOf('\n', start);
     const actualLineEnd = lineEnd === -1 ? noteInput.value.length : lineEnd;
     const currentLine = noteInput.value.substring(actualLineStart, actualLineEnd);
-    
+
     if (currentLine.startsWith('# ')) {
       // Remove header
-      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
-                        currentLine.substring(2) + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) +
+                        currentLine.substring(2) +
                         noteInput.value.substring(actualLineEnd);
     } else if (currentLine.startsWith('## ') || currentLine.startsWith('### ')) {
       // Replace with H1
-      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
-                        '# ' + currentLine.replace(/^#+\s/, '') + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) +
+                        '# ' + currentLine.replace(/^#+\s/, '') +
                         noteInput.value.substring(actualLineEnd);
     } else {
       // Add H1
-      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
-                        '# ' + currentLine + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) +
+                        '# ' + currentLine +
                         noteInput.value.substring(actualLineEnd);
     }
-    
+
     noteInput.focus();
     updateMarkdownDisplay();
   });
-  
+
   document.getElementById('h2-btn').addEventListener('click', () => {
     const start = noteInput.selectionStart;
     const lineStart = noteInput.value.lastIndexOf('\n', start);
     const actualLineStart = lineStart === -1 ? 0 : lineStart + 1;
-    
+
     // Check if line already starts with ##
     const lineEnd = noteInput.value.indexOf('\n', start);
     const actualLineEnd = lineEnd === -1 ? noteInput.value.length : lineEnd;
     const currentLine = noteInput.value.substring(actualLineStart, actualLineEnd);
-    
+
     if (currentLine.startsWith('## ')) {
       // Remove header
-      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
-                        currentLine.substring(3) + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) +
+                        currentLine.substring(3) +
                         noteInput.value.substring(actualLineEnd);
     } else if (currentLine.startsWith('# ') || currentLine.startsWith('### ')) {
       // Replace with H2
-      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
-                        '## ' + currentLine.replace(/^#+\s/, '') + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) +
+                        '## ' + currentLine.replace(/^#+\s/, '') +
                         noteInput.value.substring(actualLineEnd);
     } else {
       // Add H2
-      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
-                        '## ' + currentLine + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) +
+                        '## ' + currentLine +
                         noteInput.value.substring(actualLineEnd);
     }
-    
+
     noteInput.focus();
     updateMarkdownDisplay();
   });
-  
+
   document.getElementById('h3-btn').addEventListener('click', () => {
     const start = noteInput.selectionStart;
     const lineStart = noteInput.value.lastIndexOf('\n', start);
     const actualLineStart = lineStart === -1 ? 0 : lineStart + 1;
-    
+
     // Check if line already starts with ###
     const lineEnd = noteInput.value.indexOf('\n', start);
     const actualLineEnd = lineEnd === -1 ? noteInput.value.length : lineEnd;
     const currentLine = noteInput.value.substring(actualLineStart, actualLineEnd);
-    
+
     if (currentLine.startsWith('### ')) {
       // Remove header
-      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
-                        currentLine.substring(4) + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) +
+                        currentLine.substring(4) +
                         noteInput.value.substring(actualLineEnd);
     } else if (currentLine.startsWith('# ') || currentLine.startsWith('## ')) {
       // Replace with H3
-      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
-                        '### ' + currentLine.replace(/^#+\s/, '') + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) +
+                        '### ' + currentLine.replace(/^#+\s/, '') +
                         noteInput.value.substring(actualLineEnd);
     } else {
       // Add H3
-      noteInput.value = noteInput.value.substring(0, actualLineStart) + 
-                        '### ' + currentLine + 
+      noteInput.value = noteInput.value.substring(0, actualLineStart) +
+                        '### ' + currentLine +
                         noteInput.value.substring(actualLineEnd);
     }
-    
+
     noteInput.focus();
     updateMarkdownDisplay();
   });
-  
+
   // Add keyboard shortcuts
   noteInput.addEventListener('keydown', (e) => {
     // Bold: Ctrl+B
@@ -893,7 +722,7 @@ function setupMarkdownToolbar() {
       e.preventDefault();
       document.getElementById('bold-btn').click();
     }
-    
+
     // Italic: Ctrl+I
     if (e.ctrlKey && e.key === 'i') {
       e.preventDefault();

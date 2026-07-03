@@ -42,7 +42,13 @@ export async function list() {
     // Sort by createdAt ascending
     return notes.sort((a, b) => a.createdAt - b.createdAt);
   } else {
-    return await loadLocalNotes();
+    const notesObj = await loadLocalNotes();
+    const notes = Object.entries(notesObj).map(([id, note]) => ({
+      id,
+      text: note.text,
+      createdAt: note.createdAt
+    }));
+    return notes.sort((a, b) => a.createdAt - b.createdAt);
   }
 }
 
