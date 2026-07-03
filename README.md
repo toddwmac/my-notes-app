@@ -39,28 +39,35 @@ This is a minimalistic web application for note-taking with real-time markdown p
 
 ## Hosting on Replit
 
+This project ships with a [package.json](package.json) and a [.replit](.replit) config, so Replit **auto-detects the Node.js runtime** when you import it — no need to pick a template or runtime manually.
+
 ### Import from GitHub
-1. Push your code to GitHub (if you haven't already): `git push origin main`
-2. Go to [replit.com](https://replit.com) and sign in
-3. Click "Create Repl" → "Import from GitHub"
-4. Enter your repository: `toddwmac/my-notes-app`
-5. Choose "Node.js" as the runtime, click "Import"
+1. Push your code to GitHub (if you haven't already):
+   ```bash
+   git add -A
+   git commit -m "Add Replit backend and persistence"
+   git push origin main
+   ```
+2. Go to [replit.com](https://replit.com) and sign in.
+3. Click **Create Repl** (or **+ Create**) and select the **Import from GitHub** tab.
+4. If prompted, connect your GitHub account, then paste the repo URL:
+   `https://github.com/toddwmac/my-notes-app`
+5. Click **Import Repl**. Replit detects Node.js from `package.json` and imports automatically.
 
 ### Starting the App
-Once imported:
-1. Your repl will automatically install dependencies
-2. Click the "Run" button or press Enter
-3. Your app will be available at your unique Replit URL (e.g., `my-notes-app.toddwmac.repl.co`)
+1. Once imported, Replit installs the npm dependencies on first run.
+2. Press **Run** (or the big green ▶ button). Replit uses the `run` command in `.replit` (`npm start`).
+3. The app opens in the Webview pane. Your public URL is shown there — anything of the form `https://<repl-name>.<your-username>.repl.co` (also find it under the Webview pane / "Open in a new tab").
+
+> **Note on persistence:** The live data layer uses Replit's built-in database (`@replit/database`), which is only available *inside* the Replit environment. It's wired up automatically — no setup keys needed.
 
 ### Using on Multiple Devices
-Simply visit your Replit URL on any device (phone, tablet, another computer). Notes are automatically synced via the Replit Database backend.
+Open your Replit URL on any device (phone, tablet, another computer). Notes are stored server-side in Replit's database and sync automatically. Keep the repl running (or enable Always-On on a paid plan) for the URL to stay reachable.
 
 ### Local Development
-To run locally (without Replit):
+To run the same app on your own machine:
 ```bash
 npm install
 npm start
 ```
-Then open `http://localhost:3000`. Notes will be saved locally in `notes.local.json` on your computer.
-
-**Important:** You must ensure that your browser allows JavaScript execution from `localhost:3000`.
+Then open **http://localhost:3000**. Because the Replit database isn't available locally, the app transparently falls back to a local JSON file (`notes.local.json`, gitignored) — so notes still persist across restarts on your computer.
