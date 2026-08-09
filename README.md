@@ -4,6 +4,7 @@ A client-side note-taking app with real-time markdown preview. No server, no bac
 
 - **Live URL**: `https://toddwmac.github.io/my-notes-app/`
 - **Tech**: TypeScript, Vite, IndexedDB, GitHub Pages
+- **Refactored using**: [Kilo Code](https://kilo.ai) with the **DeepSeek V4 Pro** model
 
 ---
 
