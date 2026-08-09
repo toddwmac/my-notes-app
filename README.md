@@ -1,4 +1,4 @@
-# Todd's Quick Notes — Markdown Editor
+# Todd's Quick Notes — Markdown Editor — Last Updated: 2026-08-09
 
 A client-side note-taking app with real-time markdown preview. No server, no backend, no account — everything runs in your browser.
 
