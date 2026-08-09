@@ -1,279 +1,210 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-color-scheme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f4f9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)" />
+    <title>Todd's Quick Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<head>
-  <meta charset="UTF-8">
-  <title>Todd's Quick Notes</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-</head>
-
-<body>
-  <h1>Todd's Quick Notes</h1>
-  <!-- Added Clear All Notes button -->
-  <div class="button-container">
-    <button id="clear-btn">Clear Editor</button>
-    <button id="load-file-btn">Load Note From File</button>
-    <button id="paste-btn">Paste From Clipboard</button>
-    <button id="dark-mode-toggle">Dark</button>
-  </div>
-  <input type="file" id="file-input" accept=".txt" style="display:none" />
-  <div id="note-container"></div>
-  <div class="editor-container">
-    <div class="md-toolbar">
-      <button class="md-tool-btn" id="bold-btn" title="Bold (Ctrl+B)">B</button>
-      <button class="md-tool-btn" id="italic-btn" title="Italic (Ctrl+I)">I</button>
-      <button class="md-tool-btn" id="strike-btn" title="Strikethrough">S</button>
-      <div class="md-tool-divider"></div>
-      <button class="md-tool-btn" id="h1-btn" title="Header 1">H1</button>
-      <button class="md-tool-btn" id="h2-btn" title="Header 2">H2</button>
-      <button class="md-tool-btn" id="h3-btn" title="Header 3">H3</button>
-    </div>
-    <textarea id="note-input" placeholder="Write your note here..."></textarea>
-    <button id="select-all-input-btn" class="action-button" title="Select All Text">Select All</button>
-  </div>
-  <div class="editor-actions">
-    <button id="save-btn">Save Note</button>
-    <button id="markdown-help-btn" class="icon-button" title="Markdown Help">?</button>
-  </div>
-
-  <!-- Markdown Display Panel -->
-  <div id="markdown-panel">
-    <div class="panel-header">
-      <h3>Markdown Preview</h3>
-      <div class="panel-buttons">
-        <button id="select-all-preview-btn">Select All</button>
-        <button id="copy-formatted-btn">Copy Formatted</button>
-        <button id="copy-markdown-btn">Copy HTML</button>
+    <header class="app-header">
+      <h1>Todd's Quick Notes</h1>
+      <div class="header-actions">
+        <button id="clear-btn" class="btn btn--secondary" aria-label="Clear editor">Clear Editor</button>
+        <button id="load-file-btn" class="btn btn--secondary" aria-label="Load note from file">Load from File</button>
+        <input type="file" id="file-input" accept=".txt,.md" hidden aria-hidden="true" />
+        <button id="paste-btn" class="btn btn--secondary" aria-label="Paste from clipboard">Paste</button>
+        <button id="dark-mode-toggle" class="btn btn--ghost" aria-label="Toggle dark mode" aria-pressed="false">Dark</button>
       </div>
-    </div>
-    <div id="markdown-display"></div>
-  </div>
+    </header>
 
-  <!-- Markdown Help Modal -->
-  <div id="markdown-help-modal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Markdown Cheat Sheet</h2>
-        <span class="close-modal">&times;</span>
-      </div>
-      <div class="modal-body">
-        <div class="cheatsheet-section">
-          <h3>Headers</h3>
-          <div class="cheatsheet-row">
-            <div class="markdown-code"># Heading 1</div>
-            <div class="markdown-result">
-              <h1 style="margin:0">Heading 1</h1>
-              <span class="app-support">(GitHub, Discord, Reddit, Notion, most Markdown editors)</span>
-            </div>
-          </div>
-          <div class="cheatsheet-row">
-            <div class="markdown-code">## Heading 2</div>
-            <div class="markdown-result">
-              <h2 style="margin:0">Heading 2</h2>
-              <span class="app-support">(GitHub, Discord, Reddit, Notion, most Markdown editors)</span>
-            </div>
-          </div>
-          <div class="cheatsheet-row">
-            <div class="markdown-code">### Heading 3</div>
-            <div class="markdown-result">
-              <h3 style="margin:0">Heading 3</h3>
-              <span class="app-support">(GitHub, Discord, Reddit, Notion, most Markdown editors)</span>
-            </div>
-          </div>
+    <main id="main-content" class="app-main">
+      <section class="editor-section" aria-labelledby="editor-heading">
+        <div class="editor-toolbar" role="toolbar" aria-label="Markdown formatting">
+          <button type="button" class="tool-btn" id="bold-btn" aria-label="Bold (Ctrl+B)" title="Bold (Ctrl+B)">
+            <strong>B</strong>
+          </button>
+          <button type="button" class="tool-btn" id="italic-btn" aria-label="Italic (Ctrl+I)" title="Italic (Ctrl+I)">
+            <em>I</em>
+          </button>
+          <button type="button" class="tool-btn" id="strike-btn" aria-label="Strikethrough" title="Strikethrough">
+            <s>S</s>
+          </button>
+          <span class="tool-divider" aria-hidden="true"></span>
+          <button type="button" class="tool-btn" id="h1-btn" aria-label="Header 1" title="Header 1">H1</button>
+          <button type="button" class="tool-btn" id="h2-btn" aria-label="Header 2" title="Header 2">H2</button>
+          <button type="button" class="tool-btn" id="h3-btn" aria-label="Header 3" title="Header 3">H3</button>
         </div>
 
-        <div class="cheatsheet-section">
-          <h3>Emphasis</h3>
-          <div class="cheatsheet-row">
-            <div class="markdown-code">*Italic text*</div>
-            <div class="markdown-result"><em>Italic text</em> <span class="app-support">(GitHub, Discord, Slack, WhatsApp)</span></div>
-          </div>
-          <div class="cheatsheet-row">
-            <div class="markdown-code">_Italic text_</div>
-            <div class="markdown-result"><em>Italic text</em> <span class="app-support">(GitHub, Reddit, Notion)</span></div>
-          </div>
-          <div class="cheatsheet-row">
-            <div class="markdown-code">**Bold text**</div>
-            <div class="markdown-result"><strong>Bold text</strong> <span class="app-support">(GitHub, Discord, Slack, WhatsApp)</span></div>
-          </div>
-          <div class="cheatsheet-row">
-            <div class="markdown-code">__Bold text__</div>
-            <div class="markdown-result"><strong>Bold text</strong> <span class="app-support">(GitHub, Reddit, Notion)</span></div>
-          </div>
-          <div class="cheatsheet-row">
-            <div class="markdown-code">~~Strikethrough~~</div>
-            <div class="markdown-result"><del>Strikethrough</del> <span class="app-support">(GitHub, Discord, Slack, Notion)</span></div>
-          </div>
+        <div class="editor-wrapper">
+          <label for="note-input" class="visually-hidden">Note content</label>
+          <textarea id="note-input" placeholder="Write your note here…" aria-describedby="editor-hint" spellcheck="true" autocomplete="off"></textarea>
+          <p id="editor-hint" class="visually-hidden">Markdown supported. Use toolbar or keyboard shortcuts: Ctrl+B for bold, Ctrl+I for italic.</p>
         </div>
 
-        <div class="cheatsheet-section">
-          <h3>Lists</h3>
-          <div class="cheatsheet-row">
-            <div class="markdown-code">
-              * Unordered item<br>
-              * Unordered item<br>
-              &nbsp;&nbsp;* Nested item
-            </div>
-            <div class="markdown-result">
-              <ul style="margin:0">
-                <li>Unordered item</li>
-                <li>Unordered item
-                  <ul>
-                    <li>Nested item</li>
-                  </ul>
-                </li>
-              </ul>
-              <span class="app-support">(GitHub, Discord, Notion, most Markdown editors)</span>
-            </div>
-          </div>
-          <div class="cheatsheet-row">
-            <div class="markdown-code">
-              1. Ordered item<br>
-              2. Ordered item<br>
-              &nbsp;&nbsp;1. Nested item
-            </div>
-            <div class="markdown-result">
-              <ol style="margin:0">
-                <li>Ordered item</li>
-                <li>Ordered item
-                  <ol>
-                    <li>Nested item</li>
-                  </ol>
-                </li>
-              </ol>
-              <span class="app-support">(GitHub, Discord, Notion, most Markdown editors)</span>
-            </div>
+        <div class="editor-actions">
+          <button id="select-all-input-btn" class="btn btn--ghost btn--sm" aria-label="Select all text">Select All</button>
+          <div class="editor-actions__right">
+            <button id="markdown-help-btn" class="btn btn--icon" aria-label="Markdown help" title="Markdown help">
+              <span aria-hidden="true">?</span>
+            </button>
+            <button id="save-btn" class="btn btn--primary" aria-busy="false">Save Note</button>
           </div>
         </div>
+      </section>
 
-        <div class="cheatsheet-section">
-          <h3>Links & Images</h3>
-          <div class="cheatsheet-row">
-            <div class="markdown-code">[Link text](https://example.com)</div>
-            <div class="markdown-result">
-              <a href="#">Link text</a>
-              <span class="app-support">(GitHub, Discord, Reddit, Notion, most Markdown editors)</span>
-            </div>
+      <section class="notes-section" aria-labelledby="notes-heading">
+        <header class="section-header">
+          <h2 id="notes-heading">Saved Notes</h2>
+          <div class="section-header-actions">
+            <button id="search-btn" class="btn btn--ghost btn--sm" aria-label="Search notes">Search</button>
+            <span id="notes-count" class="badge" aria-live="polite" aria-atomic="true">0 notes</span>
           </div>
-          <div class="cheatsheet-row">
-            <div class="markdown-code">![Alt text](image-url.jpg)</div>
-            <div class="markdown-result">
-              [Image: Alt text]
-              <span class="app-support">(GitHub, Discord, Notion, not supported in WhatsApp or Slack messages)</span>
-            </div>
-          </div>
+        </header>
+        <div id="search-bar" class="search-bar hidden">
+          <input type="search" id="search-input" class="search-input" placeholder="Search notes…" aria-label="Search notes" />
+          <button id="search-clear-btn" class="btn btn--ghost btn--sm" aria-label="Clear search">Clear</button>
         </div>
-
-        <div class="cheatsheet-section">
-          <h3>Code</h3>
-          <div class="cheatsheet-row">
-            <div class="markdown-code">`inline code`</div>
-            <div class="markdown-result">
-              <code>inline code</code>
-              <span class="app-support">(GitHub, Discord, Slack, Reddit, Notion)</span>
-            </div>
-          </div>
-          <div class="cheatsheet-row">
-            <div class="markdown-code">```<br>code block<br>multiple lines<br>```</div>
-            <div class="markdown-result">
-              <pre style="margin:0"><code>code block
-multiple lines</code></pre>
-              <span class="app-support">(GitHub, Discord, not supported in WhatsApp or basic Slack messages)</span>
-            </div>
-          </div>
+        <div id="note-container" class="notes-grid" role="list" aria-label="Saved notes">
+          <p class="empty-state" aria-hidden="true">No notes yet. Write something above and click Save Note.</p>
         </div>
+      </section>
 
-        <div class="cheatsheet-section">
-          <h3>Blockquotes</h3>
-          <div class="cheatsheet-row">
-            <div class="markdown-code">> This is a blockquote</div>
-            <div class="markdown-result">
-              <blockquote style="margin:0">This is a blockquote</blockquote>
-              <span class="app-support">(GitHub, Discord, Reddit, Notion, not supported in WhatsApp)</span>
-            </div>
+      <section class="preview-section" aria-labelledby="preview-heading">
+        <header class="section-header">
+          <h2 id="preview-heading">Markdown Preview</h2>
+          <div class="preview-actions">
+            <button id="edit-note-btn" class="btn btn--ghost btn--sm hidden" aria-label="Edit this note">Edit</button>
+            <button id="select-all-preview-btn" class="btn btn--ghost btn--sm" aria-label="Select all preview content">Select All</button>
+            <button id="copy-formatted-btn" class="btn btn--ghost btn--sm" aria-label="Copy formatted text to clipboard">Copy Formatted</button>
+            <button id="copy-html-btn" class="btn btn--ghost btn--sm" aria-label="Copy HTML to clipboard">Copy HTML</button>
           </div>
+        </header>
+        <div id="markdown-display" class="markdown-display" role="region" aria-label="Rendered markdown preview" tabindex="0">
+          <p class="preview-placeholder">Start typing to see markdown preview…</p>
         </div>
+      </section>
+    </main>
 
-        <div class="cheatsheet-section">
-          <h3>Tables</h3>
-          <div class="cheatsheet-row">
-            <div class="markdown-code">
-              | Header 1 | Header 2 |<br>
-              | -------- | -------- |<br>
-              | Cell 1 | Cell 2 |
-            </div>
-            <div class="markdown-result">
-              <table style="margin:0">
-                <thead>
-                  <tr>
-                    <th>Header 1</th>
-                    <th>Header 2</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Cell 1</td>
-                    <td>Cell 2</td>
-                  </tr>
-                </tbody>
-              </table>
-              <span class="app-support">(GitHub, Notion, not supported in Discord, WhatsApp, or basic Slack messages)</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="cheatsheet-section">
-          <h3>Line Breaks & Paragraphs</h3>
-          <div class="cheatsheet-note">
-            <p><strong>Important:</strong> Line breaks in markdown vary by platform:</p>
+    <aside id="markdown-help-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+      <div class="modal-overlay" tabindex="-1"></div>
+      <div class="modal-content">
+        <header class="modal-header">
+          <h2 id="modal-title">Markdown Cheat Sheet</h2>
+          <button class="modal-close" aria-label="Close help modal">&times;</button>
+        </header>
+        <div class="modal-body">
+          <nav class="cheatsheet-toc" aria-label="Cheat sheet sections">
             <ul>
-              <li>For a single line break: End a line with two spaces, then press Enter/Return</li>
-              <li>For a new paragraph: Leave a blank line between text (press Enter/Return twice)</li>
+              <li><a href="#headers">Headers</a></li>
+              <li><a href="#emphasis">Emphasis</a></li>
+              <li><a href="#lists">Lists</a></li>
+              <li><a href="#links-images">Links &amp; Images</a></li>
+              <li><a href="#code">Code</a></li>
+              <li><a href="#blockquotes">Blockquotes</a></li>
+              <li><a href="#tables">Tables</a></li>
+              <li><a href="#horizontal-rule">Horizontal Rule</a></li>
             </ul>
-            <p><strong>CRLF vs LF:</strong> Different platforms handle line endings differently:</p>
-            <ul>
-              <li>Windows uses CRLF (Carriage Return + Line Feed)</li>
-              <li>Mac/Linux use LF (Line Feed only)</li>
-              <li>This rarely affects markdown rendering, but can matter when sharing files across platforms</li>
-            </ul>
-          </div>
-        </div>
-        
-        <div class="cheatsheet-section">
-          <h3>App Compatibility</h3>
-          <div class="cheatsheet-note">
-            <p><strong>App-Specific Markdown Support:</strong></p>
-            <ul>
-              <li><strong>WhatsApp:</strong> Supports *italic*, **bold**, and ~strikethrough~ (single tilde), but not code blocks, tables, or images</li>
-              <li><strong>Slack:</strong> Supports *italic*, **bold**, `code`, and ```code blocks```, but limited support for lists and no tables</li>
-              <li><strong>Discord:</strong> Good support for most markdown including *italic*, **bold**, `code`, ```code blocks```, and > blockquotes</li>
-              <li><strong>GitHub:</strong> Full markdown support including all formatting, tables, and code syntax highlighting</li>
-              <li><strong>Reddit:</strong> Good support for most markdown but with some limitations on complex formatting</li>
-              <li><strong>Notion:</strong> Excellent markdown support with additional custom syntax for advanced features</li>
-            </ul>
-            <p><strong>Tip:</strong> When writing for multiple platforms, stick to basic formatting like *italic*, **bold**, and simple lists for maximum compatibility.</p>
-          </div>
-        </div>
+          </nav>
 
-        <div class="cheatsheet-section">
-          <h3>Horizontal Rule</h3>
-          <div class="cheatsheet-row">
-            <div class="markdown-code">---</div>
-            <div class="markdown-result">
-              <hr style="margin:0">
-              <span class="app-support">(GitHub, Notion, Reddit, not supported in WhatsApp or basic Slack messages)</span>
+          <section id="headers" class="cheatsheet-section">
+            <h3>Headers</h3>
+            <div class="cheatsheet-row"><div class="markdown-code"># Heading 1</div><div class="markdown-result"><h1>Heading 1</h1></div></div>
+            <div class="cheatsheet-row"><div class="markdown-code">## Heading 2</div><div class="markdown-result"><h2>Heading 2</h2></div></div>
+            <div class="cheatsheet-row"><div class="markdown-code">### Heading 3</div><div class="markdown-result"><h3>Heading 3</h3></div></div>
+          </section>
+
+          <section id="emphasis" class="cheatsheet-section">
+            <h3>Emphasis</h3>
+            <div class="cheatsheet-row"><div class="markdown-code">*Italic*</div><div class="markdown-result"><em>Italic</em></div></div>
+            <div class="cheatsheet-row"><div class="markdown-code">**Bold**</div><div class="markdown-result"><strong>Bold</strong></div></div>
+            <div class="cheatsheet-row"><div class="markdown-code">~~Strikethrough~~</div><div class="markdown-result"><del>Strikethrough</del></div></div>
+          </section>
+
+          <section id="lists" class="cheatsheet-section">
+            <h3>Lists</h3>
+            <div class="cheatsheet-row"><div class="markdown-code">* Unordered<br />* Unordered</div><div class="markdown-result"><ul><li>Unordered</li><li>Unordered</li></ul></div></div>
+            <div class="cheatsheet-row"><div class="markdown-code">1. Ordered<br />2. Ordered</div><div class="markdown-result"><ol><li>Ordered</li><li>Ordered</li></ol></div></div>
+          </section>
+
+          <section id="links-images" class="cheatsheet-section">
+            <h3>Links &amp; Images</h3>
+            <div class="cheatsheet-row"><div class="markdown-code">[Link](https://example.com)</div><div class="markdown-result"><a href="#">Link</a></div></div>
+            <div class="cheatsheet-row"><div class="markdown-code">![Alt](image.jpg)</div><div class="markdown-result">[Image: Alt]</div></div>
+          </section>
+
+          <section id="code" class="cheatsheet-section">
+            <h3>Code</h3>
+            <div class="cheatsheet-row"><div class="markdown-code">`inline code`</div><div class="markdown-result"><code>inline code</code></div></div>
+            <div class="cheatsheet-row"><div class="markdown-code">```<br />code block<br />```</div><div class="markdown-result"><pre><code>code block</code></pre></div></div>
+          </section>
+
+          <section id="blockquotes" class="cheatsheet-section">
+            <h3>Blockquotes</h3>
+            <div class="cheatsheet-row"><div class="markdown-code">&gt; Quote</div><div class="markdown-result"><blockquote>Quote</blockquote></div></div>
+          </section>
+
+          <section id="tables" class="cheatsheet-section">
+            <h3>Tables</h3>
+            <div class="cheatsheet-row">
+              <div class="markdown-code">| H1 | H2 |<br />| --- | --- |<br />| C1 | C2 |</div>
+              <div class="markdown-result"><table><thead><tr><th>H1</th><th>H2</th></tr></thead><tbody><tr><td>C1</td><td>C2</td></tr></tbody></table></div>
             </div>
-          </div>
+          </section>
+
+          <section id="horizontal-rule" class="cheatsheet-section">
+            <h3>Horizontal Rule</h3>
+            <div class="cheatsheet-row"><div class="markdown-code">---</div><div class="markdown-result"><hr /></div></div>
+          </section>
         </div>
       </div>
-    </div>
-  </div>
+    </aside>
 
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="script.js"></script>
-</body>
+    <aside id="confirm-delete-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title" hidden>
+      <div class="modal-overlay" tabindex="-1"></div>
+      <div class="confirm-modal-content">
+        <header class="confirm-modal-header">
+          <h3 id="confirm-modal-title">Delete Note</h3>
+          <button class="confirm-modal-close" aria-label="Close delete confirmation">&times;</button>
+        </header>
+        <div class="confirm-modal-body">
+          <p>Are you sure you want to delete this note? This action cannot be undone.</p>
+          <span class="confirm-note-id"></span>
+        </div>
+        <div class="confirm-modal-footer">
+          <button class="btn btn--secondary confirm-modal-cancel" type="button" aria-label="Cancel delete">Cancel</button>
+          <button class="btn btn--danger confirm-modal-confirm" type="button" aria-label="Confirm delete">Delete</button>
+        </div>
+      </div>
+    </aside>
 
+    <aside id="edit-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title" hidden>
+      <div class="modal-overlay" tabindex="-1"></div>
+      <div class="modal-content edit-modal-content">
+        <header class="modal-header">
+          <h2 id="edit-modal-title">Edit Note</h2>
+          <button class="modal-close" aria-label="Close edit modal">&times;</button>
+        </header>
+        <div class="modal-body">
+          <div class="editor-wrapper">
+            <label for="edit-note-input" class="visually-hidden">Edit note content</label>
+            <textarea id="edit-note-input" class="edit-note-textarea" placeholder="Edit your note…" spellcheck="true"></textarea>
+          </div>
+          <div id="edit-preview-display" class="markdown-display edit-preview" role="region" aria-label="Edit preview"></div>
+        </div>
+        <div class="confirm-modal-footer">
+          <button class="btn btn--secondary edit-modal-cancel" type="button">Cancel</button>
+          <button class="btn btn--primary edit-modal-save" type="button">Save Changes</button>
+        </div>
+      </div>
+    </aside>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
 </html>

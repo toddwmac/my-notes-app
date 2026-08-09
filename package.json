@@ -1,13 +1,20 @@
 {
   "name": "my-notes-app",
-  "version": "2.0.0",
+  "version": "3.0.0",
+  "private": true,
   "type": "module",
-  "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "express": "^4.19.2",
-    "@replit/database": "^3.0.0"
+    "dompurify": "^3.2.4",
+    "idb": "^8.0.2",
+    "marked": "^15.0.9"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vite": "^6.3.3"
   }
 }
